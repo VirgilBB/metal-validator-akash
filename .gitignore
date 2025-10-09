@@ -1,4 +1,16 @@
-# Akash Network Metal Validator Template
+# Akash Network Multi-Revenue Project
+
+# Security-sensitive files
+*.key
+*.crt
+*.pem
+*.p12
+*.pfx
+exported-key.txt
+key-pass.txt
+new-key.txt
+RSA-(2048).pub
+*.tar.gz
 
 # Logs
 *.log
@@ -50,13 +62,6 @@ venv.bak/
 *.backup
 *.old
 
-# Certificate files (security)
-*.key
-*.crt
-*.pem
-*.p12
-*.pfx
-
 # Environment files
 .env
 .env.local
@@ -67,3 +72,7 @@ venv.bak/
 # Deployment specific
 deployment-*.yml.bak
 *.deployment.log
+
+# Project-specific directories to exclude
+Y/
+yes/
