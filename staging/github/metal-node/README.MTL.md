@@ -1,4 +1,4 @@
-# Metal Validator on Akash Network
+# Metal Validator (.mtl) on Akash Network
 
 A complete deployment template for running a Metal blockchain validator node on the Akash Network.
 
@@ -13,10 +13,10 @@ A complete deployment template for running a Metal blockchain validator node on 
 
 The deployment automatically provides:
 
-* ✅ **Node ID** - For validator registration
-* ✅ **Public Key** - For proof of possession (0x format)
+* ✅ **Node ID** - For validator registration (include full "NodeID-" prefix)
+* ✅ **Public Key** - For proof of possession (hex format)
 * ✅ **Signature** - For proof of possession (hex format)
-* ✅ **Complete validator data** - Ready for Metal dashboard
+* ✅ **Complete validator data** - Ready for Metal (.mtl) dashboard
 
 ## 🔧 Template Features
 
@@ -29,24 +29,25 @@ The deployment automatically provides:
 
 ## 📁 Files
 
-* `templates/metal-node-operator/deploy-testnet-cerebro.yml` - Testnet deployment template
-* `templates/metal-node-operator/deploy.yml` - Mainnet deployment template
-* `templates/metal-node-operator/USER_JOURNEY.md` - Complete user guide
-* `PROGRESS.md` - Project development progress
-* `CHANGELOG.md` - Development changelog
+* `deploy-testnet-cerebro.yml` - Testnet deployment template
+* `deploy.yml` - Mainnet deployment template
+* `TUTORIAL.md` - Step-by-step deployment guide
+* `USER_JOURNEY.md` - Complete user guide
+* `PROGRESS.md` - Development progress tracking
+* `CHANGELOG.md` - Detailed changelog
 
 ## 🎯 Usage
 
 ### Testnet Deployment
 ```bash
 # Deploy to Metal Tahoe Testnet
-akash tx deployment create templates/metal-node-operator/deploy-testnet-cerebro.yml --from your-wallet --yes
+akash tx deployment create deploy-testnet-cerebro.yml --from your-wallet --yes
 ```
 
 ### Mainnet Deployment
 ```bash
 # Deploy to Metal Mainnet
-akash tx deployment create templates/metal-node-operator/deploy.yml --from your-wallet --yes
+akash tx deployment create deploy.yml --from your-wallet --yes
 ```
 
 ## 📊 Expected Output
@@ -58,7 +59,7 @@ After deployment, you'll see clean validator data:
 === METAL TESTNET VALIDATOR SETUP DATA ===
 ========================================
 
-Copy the following data to your Metal TESTNET dashboard:
+Copy the following data to your Metal (.mtl) TESTNET dashboard:
 
 Node ID:
 NodeID-YourNodeIDHere
@@ -86,9 +87,8 @@ Signature:
 
 ## 📚 Documentation
 
-See the `templates/metal-node-operator/` directory for detailed guides:
-
-* **USER_JOURNEY.md** - Complete step-by-step user guide
+* **TUTORIAL.md** - Step-by-step deployment guide
+* **USER_JOURNEY.md** - Complete user guide
 * **PROGRESS.md** - Development progress tracking
 * **CHANGELOG.md** - Detailed changelog
 
@@ -128,4 +128,4 @@ This template is fully functional and ready for production use. It successfully:
 - ✅ Extracts validator data
 - ✅ Provides complete setup information
 
-**Ready to deploy and earn staking rewards!** 🎉
+**Ready to deploy and earn METAL staking rewards!** 🎉

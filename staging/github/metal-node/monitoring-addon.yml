@@ -1,0 +1,189 @@
+version: "2.0"
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/etc/prometheus/console_libraries
+      - --web.console.templates=/etc/prometheus/consoles
+      - --storage.tsdb.retention.time=200h
+      - --web.enable-lifecycle
+    env:
+      - METAL_NODE_URL=${METAL_NODE_URL:-http://metalgo:9650}
+    expose:
+      - port: 9090
+        as: 9090
+        to:
+          - global: true
+    params:
+      storage:
+        prometheus-data:
+          mount: /prometheus
+        prometheus-config:
+          mount: /etc/prometheus
+
+  grafana:
+    image: grafana/grafana:latest
+    env:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-metal_node_2024}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/metal-validator.json
+    expose:
+      - port: 3000
+        as: 3000
+        to:
+          - global: true
+    params:
+      storage:
+        grafana-data:
+          mount: /var/lib/grafana
+        grafana-dashboards:
+          mount: /etc/grafana/provisioning/dashboards
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    command:
+      - --path.procfs=/host/proc
+      - --path.rootfs=/rootfs
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    expose:
+      - port: 9100
+        as: 9100
+        to:
+          - global: true
+    params:
+      storage:
+        host-proc:
+          mount: /host/proc
+        host-sys:
+          mount: /host/sys
+        host-root:
+          mount: /rootfs
+
+  revenue-tracker:
+    image: metal-revenue-tracker:latest
+    env:
+      - METAL_NODE_URL=${METAL_NODE_URL:-http://metalgo:9650}
+      - PROMETHEUS_URL=http://prometheus:9090
+      - STAKING_AMOUNT=${STAKING_AMOUNT:-2004}
+      - VALIDATOR_ADDRESS=${METAL_WALLET:-P-metal1dyqrc76fstllslqy50lg9pfd5fvfdnhpqwj5lm}
+      - VALIDATOR_NAME=${VALIDATOR_NAME:-akash_template_deployment}
+      - EXPECTED_APY=${EXPECTED_APY:-10}
+    expose:
+      - port: 8080
+        as: 8080
+        to:
+          - global: true
+    depends_on:
+      - prometheus
+
+profiles:
+  compute:
+    prometheus:
+      resources:
+        cpu:
+          units: 2.0
+        memory:
+          size: 4Gi
+        storage:
+          - size: 10Gi
+          - name: prometheus-data
+            size: 100Gi
+            attributes:
+              persistent: true
+              class: beta2
+          - name: prometheus-config
+            size: 1Gi
+            attributes:
+              persistent: true
+              class: beta2
+
+    grafana:
+      resources:
+        cpu:
+          units: 1.0
+        memory:
+          size: 2Gi
+        storage:
+          - size: 5Gi
+          - name: grafana-data
+            size: 20Gi
+            attributes:
+              persistent: true
+              class: beta2
+          - name: grafana-dashboards
+            size: 1Gi
+            attributes:
+              persistent: true
+              class: beta2
+
+    node-exporter:
+      resources:
+        cpu:
+          units: 0.5
+        memory:
+          size: 1Gi
+        storage:
+          - size: 2Gi
+          - name: host-proc
+            size: 1Gi
+            attributes:
+              persistent: false
+          - name: host-sys
+            size: 1Gi
+            attributes:
+              persistent: false
+          - name: host-root
+            size: 1Gi
+            attributes:
+              persistent: false
+
+    revenue-tracker:
+      resources:
+        cpu:
+          units: 1.0
+        memory:
+          size: 2Gi
+        storage:
+          size: 5Gi
+
+  placement:
+    monitoring-providers:
+      attributes:
+        host: akash
+        tier: community
+      pricing:
+        prometheus:
+          denom: uakt
+          amount: 60000   # ~$60/month for monitoring
+        grafana:
+          denom: uakt
+          amount: 30000   # ~$30/month for dashboards
+        node-exporter:
+          denom: uakt
+          amount: 15000   # ~$15/month for metrics
+        revenue-tracker:
+          denom: uakt
+          amount: 30000   # ~$30/month for tracking
+
+deployment:
+  prometheus:
+    monitoring-providers:
+      profile: prometheus
+      count: 1
+  grafana:
+    monitoring-providers:
+      profile: grafana
+      count: 1
+  node-exporter:
+    monitoring-providers:
+      profile: node-exporter
+      count: 1
+  revenue-tracker:
+    monitoring-providers:
+      profile: revenue-tracker
+      count: 1
