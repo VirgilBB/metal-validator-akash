@@ -1,10 +1,10 @@
-# Metal Node Operator - Quick Start Guide
+# Metal Node Operator (.mtl) - Quick Start Guide
 
 ## 🎯 **Your Specific Configuration**
 
 ### **✅ Ready to Deploy:**
 - **Akash Wallet**: `akash1fr0pf566qtwm3xp5z7tscnl0zxmq46d7xz22gd` (45.3 AKT ✅)
-- **Metal Wallet**: `P-metal1dyqrc76fstllslqy50lg9pfd5fvfdnhpqwj5lm` (2,004 METAL ✅)
+- **Metal (.mtl) Wallet**: `P-metal1dyqrc76fstllslqy50lg9pfd5fvfdnhpqwj5lm` (2,004 METAL ✅)
 - **Validator Name**: `akash_template_deployment`
 - **Network**: Akash Mainnet (akashnet-2)
 
@@ -20,7 +20,7 @@ cd /Users/vb/akash/templates/metal-node-operator
 
 **The script will ask for:**
 - Validator name: `akash_template_deployment`
-- Metal wallet: `P-metal1dyqrc76fstllslqy50lg9pfd5fvfdnhpqwj5lm`
+- Metal (.mtl) wallet: `P-metal1dyqrc76fstllslqy50lg9pfd5fvfdnhpqwj5lm`
 - METAL amount: `2004` (or any amount ≥2000)
 - Expected APY: `10` (or your preference)
 
@@ -140,4 +140,4 @@ cd /Users/vb/akash/templates/metal-node-operator
 ./deploy-metal-node.sh
 ```
 
-**The script will handle everything and create your Metal validator node!** 🎉
+**The script will handle everything and create your Metal (.mtl) validator node!** 🎉
