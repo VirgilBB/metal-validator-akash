@@ -1,4 +1,20 @@
-# Metal Blockchain Node Operator - Complete User Journey
+# Metal Blockchain Validator - Complete User Journey
+
+## 🎯 **What This Template Does**
+
+### **Template Purpose:**
+1. **Deploy Metal node** on Akash decentralized cloud
+2. **Extract Node ID** automatically from running node
+3. **Extract Staking Keys** (Public Key + Signature)
+4. **Provide complete validator data** for Metal dashboard setup
+
+### **What Template DOESN'T Do:**
+- ❌ Set validator name (user does this on dashboard)
+- ❌ Configure staking amounts (user does this on dashboard)  
+- ❌ Set staking dates (user does this on dashboard)
+- ❌ Handle wallet addresses (user provides their own)
+
+---
 
 ## 👤 **Target User Profile**
 - **Assets**: 2,000+ METAL tokens ready for staking
@@ -97,41 +113,18 @@ provider-services tx cert generate client --from $AKASH_KEY_NAME
 provider-services tx cert publish client --from $AKASH_KEY_NAME --yes
 ```
 
-### **Phase 3: Configuration (15 minutes)**
+### **Phase 3: Deployment (20 minutes)**
 
-#### **Step 3.1: Prepare Metal Wallet Information**
-**Gather the following:**
-- [ ] **Metal wallet address** (where your METAL tokens are)
-- [ ] **Metal private key** (for validator setup)
-- [ ] **Validator name** (public name for your node)
-- [ ] **Staking amount** (e.g., 2005 METAL)
-
-#### **Step 3.2: Update Deployment Configuration**
-**Edit the deployment file with your details:**
-```yaml
-# In deploy-mainnet.yml, update:
-env:
-  - METAL_VALIDATOR_NAME=YOUR_VALIDATOR_NAME
-  - METAL_STAKING_AMOUNT=2005000000000000000000  # Your METAL amount in wei
-  
-# In revenue-tracker service:
-env:
-  - STAKING_AMOUNT=2005  # Your METAL amount
-  - VALIDATOR_ADDRESS=YOUR_METAL_WALLET_ADDRESS
-```
-
-### **Phase 4: Deployment (20 minutes)**
-
-#### **Step 4.1: Deploy Metal Node**
+#### **Step 3.1: Deploy Metal Node**
 ```bash
 # Navigate to template directory
 cd /path/to/templates/metal-node-operator
 
 # Deploy to Akash (costs ~5 AKT escrow)
-provider-services tx deployment create deploy-mainnet.yml --from $AKASH_KEY_NAME --yes
+provider-services tx deployment create deploy-testnet-cerebro.yml --from $AKASH_KEY_NAME --yes
 ```
 
-#### **Step 4.2: Accept Provider Bid**
+#### **Step 3.2: Accept Provider Bid**
 ```bash
 # Set deployment sequence (from deployment output)
 export AKASH_DSEQ=YOUR_DSEQ_NUMBER
@@ -144,31 +137,70 @@ export AKASH_PROVIDER=CHOSEN_PROVIDER_ADDRESS
 provider-services tx market lease create --dseq $AKASH_DSEQ --provider $AKASH_PROVIDER --from $AKASH_KEY_NAME --yes
 ```
 
-#### **Step 4.3: Send Manifest**
+#### **Step 3.3: Send Manifest**
 ```bash
 # Upload deployment manifest
-provider-services send-manifest deploy-mainnet.yml --dseq $AKASH_DSEQ --provider $AKASH_PROVIDER --from $AKASH_KEY_NAME
+provider-services send-manifest deploy-testnet-cerebro.yml --dseq $AKASH_DSEQ --provider $AKASH_PROVIDER --from $AKASH_KEY_NAME
 ```
 
-### **Phase 5: Validation & Monitoring (Ongoing)**
+### **Phase 4: Extract Validator Data (5 minutes)**
 
-#### **Step 5.1: Access Your Node**
+#### **Step 4.1: Monitor Deployment Logs**
 ```bash
-# Get deployment URLs
+# Get deployment status
 provider-services lease-status --dseq $AKASH_DSEQ --from $AKASH_KEY_NAME --provider $AKASH_PROVIDER
 ```
 
-**Access points:**
-- **Grafana Dashboard**: `http://YOUR_DEPLOYMENT_URL:3000` (admin/metal_node_2024)
-- **Metal Node RPC**: `http://YOUR_DEPLOYMENT_URL:9650`
-- **Prometheus Metrics**: `http://YOUR_DEPLOYMENT_URL:9090`
-- **Revenue Tracker**: `http://YOUR_DEPLOYMENT_URL:8080`
+**Look for this section in the logs:**
+```
+========================================
+=== METAL TESTNET VALIDATOR SETUP DATA ===
+========================================
 
-#### **Step 5.2: Configure Staking**
-1. **Access Metal node** via RPC endpoint
-2. **Import your Metal wallet** private key
-3. **Start validator** with your METAL tokens
-4. **Monitor staking rewards** via dashboard
+Copy the following data to your Metal TESTNET dashboard:
+
+Node ID:
+NodeID-[YOUR_NODE_ID]
+
+Proof of Possession
+The public key portion of the proof of possession:
+
+Public Key:
+-----BEGIN PUBLIC KEY-----
+[YOUR_PUBLIC_KEY]
+-----END PUBLIC KEY-----
+
+The signature portion of the proof of possession:
+
+Signature:
+[YOUR_SIGNATURE_HEX_STRING]
+```
+
+#### **Step 4.2: Copy Validator Data**
+**Save these three pieces of data:**
+1. **Node ID**: `NodeID-[YOUR_NODE_ID]`
+2. **Public Key**: The full PEM format key
+3. **Signature**: The hexadecimal signature string
+
+### **Phase 5: Complete Validator Setup (10 minutes)**
+
+#### **Step 5.1: Access Metal Dashboard**
+- Go to **Metal Validator Dashboard**
+- Navigate to **"Add Validator"** section
+
+#### **Step 5.2: Enter Validator Data**
+1. **Node ID**: Paste the NodeID from template logs
+2. **Public Key**: Paste the full public key from logs
+3. **Signature**: Paste the signature hex string from logs
+4. **Validator Name**: Choose your validator name
+5. **Staking Amount**: Enter your METAL amount (2000+ tokens)
+6. **Staking Duration**: Choose duration (21+ days)
+7. **Reward Address**: Your Metal wallet address
+
+#### **Step 5.3: Submit Validator Registration**
+- Review all information
+- Submit validator transaction
+- Wait for confirmation
 
 ---
 
@@ -209,6 +241,14 @@ provider-services lease-status --dseq $AKASH_DSEQ --from $AKASH_KEY_NAME --provi
 - **Cause**: Network connectivity issues
 - **Solution**: Check firewall settings, restart deployment
 
+#### **"Node ID not found"**
+- **Cause**: Node not fully started
+- **Solution**: Wait 5-10 minutes for full initialization
+
+#### **"Signature extraction failed"**
+- **Cause**: Certificate parsing issues
+- **Solution**: Check staking keys exist, restart if needed
+
 ### **Support Resources**
 - **Akash Discord**: https://discord.akash.network
 - **Metal Blockchain Telegram**: https://t.me/MetalBlockchainValidators
@@ -221,36 +261,52 @@ provider-services lease-status --dseq $AKASH_DSEQ --from $AKASH_KEY_NAME --provi
 ### **Week 1 Targets**
 - [ ] Node deployed and running
 - [ ] Blockchain synced (100%)
-- [ ] Validator active and staking
-- [ ] Monitoring dashboards operational
+- [ ] Validator data extracted successfully
+- [ ] Validator registered on Metal dashboard
 
 ### **Month 1 Targets**
 - [ ] Consistent uptime (>99%)
 - [ ] Staking rewards accumulating
-- [ ] Revenue tracking accurate
+- [ ] Validator active on Metal network
 - [ ] ROI calculation positive
 
 ### **Ongoing Monitoring**
-- **Daily**: Check node status via Grafana
-- **Weekly**: Review staking rewards
+- **Daily**: Check node status via Akash
+- **Weekly**: Review staking rewards on Metal dashboard
 - **Monthly**: Calculate ROI and adjust if needed
 
 ---
 
 ## 🎉 **Congratulations!**
 
-You've successfully deployed a **Metal Blockchain Node Operator** on Akash Network!
+You've successfully deployed a **Metal Blockchain Validator** on Akash Network!
 
 **Your setup provides:**
 - ✅ **Passive income** from METAL staking
-- ✅ **Professional monitoring** with Grafana dashboards
-- ✅ **Cost-effective hosting** on decentralized cloud
-- ✅ **Scalable infrastructure** for additional validators
+- ✅ **Decentralized hosting** on Akash network
+- ✅ **Professional validator infrastructure**
+- ✅ **Scalable setup** for additional validators
 
 **Next steps:**
-1. **Monitor your rewards** daily
+1. **Monitor your rewards** on Metal dashboard
 2. **Scale up** with more METAL tokens
 3. **Share your success** in Metal community
 4. **Consider additional** Akash templates for diversification
 
 **Welcome to the decentralized economy!** 🚀
+
+---
+
+## 📞 **Template Support**
+
+### **Template Issues:**
+- Check port accessibility (9650/9651)
+- Verify node sync status
+- Monitor deployment logs for validator data
+
+### **Validator Setup:**
+- Use Metal dashboard for configuration
+- Follow Metal documentation for staking
+- Contact Metal support for validator issues
+
+**This template provides the infrastructure, users provide the configuration!** 🚀
