@@ -1,0 +1,95 @@
+# Sensitive files
+exported-key.txt
+key-pass.txt
+new-key.txt
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# Wallet and private keys
+wallet-*
+*-wallet*
+*private*
+*secret*
+
+# System files
+.DS_Store
+.vscode/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# Provider specific files (not for public repo)
+provider-config.yaml
+provider-start.sh
+akash-provider-setup-complete.sh
+restart-provider.sh
+restore_provider_keys.sh
+existing-wallet-provider.sh
+wallet-setup.sh
+check-validator.sh
+validator-commands.sh
+validator-commands-list.txt
+
+# Documentation that's not for the public repo
+AKASH_KNOWLEDGE_BASE.md
+AKASH_MASTER_RAG.md
+AKASH_PROVIDER_COMPLETE_GUIDE.md
+AKASH_PROVIDER_PORTS_REFERENCE.md
+BIDDING_CONFIGURATION.md
+CHANGELOG.md
+DEPLOYMENT.md
+DEVELOPMENT.md
+EXECUTE_NOW.txt
+EXTERNAL_ACCESS_FIX.md
+FIX_PROVIDER_KEYS.md
+PROGRESS.md
+PROVIDER_COMMUNICATION_GUIDE.md
+PROVIDER_COMPLETE_FIX.md
+PROVIDER_DOCUMENTATION_SUMMARY.md
+PROVIDER_FROM_FIELD_DEFINITIVE_GUIDE.md
+PROVIDER_TROUBLESHOOTING_GUIDE.md
+PROVIDER_VERSION_ROLLBACK_GUIDE.md
+RECOVERY_SUMMARY_OCT_2025.md
+
+# Other templates (not metal-validator specific)
+templates/arbitrage-engine/
+templates/polymarket-signal-generator/
+templates/sports-predictor/
+templates/web3-profit-engine/
+templates/deploy-suite.sh
+templates/SANDBOX_TESTING_GUIDE.md
+templates/COMPLETE_DEPLOYMENT_GUIDE.md
+templates/README.md
+
+# Metal node operator - keep only the working version
+templates/metal-node-operator/deploy-cerebro.yml
+templates/metal-node-operator/deploy-simple.yml
+templates/metal-node-operator/deploy-simple.sh
+templates/metal-node-operator/deploy-metal-node.sh
+templates/metal-node-operator/monitoring-addon.yml
+templates/metal-node-operator/nginx-metal-fixed.conf
+templates/metal-node-operator/nginx-metal.conf
+templates/metal-node-operator/verify-ports.sh
+templates/metal-node-operator/Dockerfile
+templates/metal-node-operator/scripts/
+
+# Other directories
+examples/
+guides/
+reference/
+technical/
+tools/
+Y/
+yes/
+rainbowminer-deploy.yaml
+hetzner-order-guide.md
+RSA-(2048).pub
+template-development-setup.sh
