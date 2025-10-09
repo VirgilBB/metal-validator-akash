@@ -1,131 +1,190 @@
-# Metal Validator on Akash Network
+# Akash Network Multi-Revenue Project
 
-A complete deployment template for running a Metal blockchain validator node on the Akash Network.
+A comprehensive project establishing three revenue streams on the Akash Network: Validator Operations, Provider Services, and Template Marketplace.
+
+## 🎯 Project Overview
+
+**Goal**: Establish three revenue streams on Akash Network  
+**Timeline**: September 2025 - Ongoing  
+**Status**: All Three Prongs Complete ✅
+
+### 🏆 Revenue Streams
+
+1. **✅ Validator Operations** - Active validator earning rewards
+2. **✅ Provider Services** - Operational provider processing orders  
+3. **✅ Template Marketplace** - Metal validator template ready for deployment
+
+---
 
 ## 🚀 Quick Start
 
-1. **Deploy the template** using the Akash console or CLI
-2. **Wait for deployment** to complete (5-10 minutes)
-3. **Copy the validator data** from the deployment logs
-4. **Complete validator setup** on the Metal dashboard
-
-## 📋 What You Get
-
-The deployment automatically provides:
-
-* ✅ **Node ID** - For validator registration
-* ✅ **Public Key** - For proof of possession (0x format)
-* ✅ **Signature** - For proof of possession (hex format)
-* ✅ **Complete validator data** - Ready for Metal dashboard
-
-## 🔧 Template Features
-
-* **Automatic MetalGo installation** - Downloads and configures MetalGo v1.12.0-hotfix
-* **Staking key generation** - Creates validator keys automatically
-* **Clean data extraction** - Professional output with proper formatting
-* **Nginx proxy** - Required for Metal node operation
-* **File descriptor limits** - Prevents "too many open files" errors
-* **Complete validator setup** - All required data extracted and displayed
-
-## 📁 Files
-
-* `templates/metal-node-operator/deploy-testnet-cerebro.yml` - Testnet deployment template
-* `templates/metal-node-operator/deploy.yml` - Mainnet deployment template
-* `templates/metal-node-operator/USER_JOURNEY.md` - Complete user guide
-* `PROGRESS.md` - Project development progress
-* `CHANGELOG.md` - Development changelog
-
-## 🎯 Usage
-
-### Testnet Deployment
+### For Metal Validator Deployment
 ```bash
-# Deploy to Metal Tahoe Testnet
-akash tx deployment create templates/metal-node-operator/deploy-testnet-cerebro.yml --from your-wallet --yes
+# Navigate to Metal validator template
+cd templates/metal-node-operator/
+
+# Deploy to testnet
+akash tx deployment create deploy-testnet-cerebro.yml --from your-wallet --yes
+
+# Deploy to mainnet  
+akash tx deployment create deploy.yml --from your-wallet --yes
 ```
 
-### Mainnet Deployment
+### For Provider Operations
 ```bash
-# Deploy to Metal Mainnet
-akash tx deployment create templates/metal-node-operator/deploy.yml --from your-wallet --yes
+# Check provider status
+provider-services status --from your-wallet
+
+# Monitor provider performance
+provider-services lease-status --dseq $AKASH_DSEQ --from your-wallet
 ```
 
-## 📊 Expected Output
+---
 
-After deployment, you'll see clean validator data:
+## 📊 Current Status
+
+### Prong 1: Validator Operations ✅
+- **Status**: BONDED & ACTIVE - Earning rewards
+- **Validator Address**: akashvaloper163zp6lyavlg7r2cru8djmv6d8qnpvlm0nsnr6s
+- **Total Stake**: ~2,484 AKT
+- **Commission**: 6%
+
+### Prong 2: Provider Operations ✅
+- **Status**: ONLINE - Fully operational
+- **Provider Address**: akash1fr0pf566qtwm3xp5z7tscnl0zxmq46d7xz22gd
+- **Name**: cerebro.ai
+- **Domain**: provider.cerebro.host
+- **Version**: provider-services v0.8.4
+
+### Prong 3: Template Marketplace ✅
+- **Status**: 100% COMPLETE
+- **Template**: Metal validator deployment template
+- **Documentation**: Complete user guides and tutorials
+- **Ready for**: Community deployment and adoption
+
+---
+
+## 📁 Project Structure
 
 ```
-========================================
-=== METAL TESTNET VALIDATOR SETUP DATA ===
-========================================
-
-Copy the following data to your Metal TESTNET dashboard:
-
-Node ID:
-NodeID-YourNodeIDHere
-
-Proof of Possession (Public Key):
-0x3059301306072a8648ce3d020106082a8648ce3d03010703420004...
-
-Signature:
-3045022100aceb51df23c56286126054f1c53b78befe78a7724881dcd6e9c67cf068d04ecd0221009c7af5e25f6206470f30054699c8dafad1702372740122392a7d631a9ba5a74b
+├── templates/metal-node-operator/     # Metal validator template
+│   ├── deploy.yml                     # Mainnet deployment
+│   ├── deploy-testnet-cerebro.yml     # Testnet deployment
+│   ├── README.MTL.md                  # Template documentation
+│   ├── TUTORIAL.MTL.md                # Step-by-step guide
+│   ├── USER_JOURNEY.MTL.md            # Complete user workflow
+│   ├── PROGRESS.MTL.md                # Development progress
+│   └── CHANGELOG.MTL.md               # Detailed changelog
+├── guides/                            # General Akash guides
+├── examples/                          # Example deployments
+├── technical/                         # Technical documentation
+├── tools/                             # Utility scripts
+├── PROGRESS.md                        # Overall project progress
+├── CHANGELOG.md                       # Project changelog
+└── README.md                          # This file
 ```
 
-## 🔧 Technical Details
+---
 
-### Resource Requirements
-- **CPU**: 2 cores
-- **Memory**: 4GB RAM
-- **Storage**: 120GB
-- **Network**: Ports 9650 (RPC) and 9651 (P2P)
+## 🎯 Template Marketplace
 
-### Network Configuration
-- **Testnet**: Network ID 381932 (Metal Tahoe Testnet)
-- **Mainnet**: Network ID 381931 (Metal Mainnet)
-- **RPC URL**: https://tahoe.metalblockchain.org/ext/bc/C/rpc
-- **Explorer**: https://tahoe.metalscan.io/
+### Metal Validator Template (.mtl)
+A complete deployment template for running Metal blockchain validator nodes on Akash Network.
+
+**Features:**
+- ✅ Automatic MetalGo installation
+- ✅ Staking key generation
+- ✅ Clean data extraction
+- ✅ Nginx proxy integration
+- ✅ Complete validator setup
+
+**Files:**
+- `deploy.yml` - Mainnet deployment
+- `deploy-testnet-cerebro.yml` - Testnet deployment
+- `README.MTL.md` - Template documentation
+- `TUTORIAL.MTL.md` - Deployment guide
+
+---
+
+## 📈 Revenue Projections
+
+### Conservative Estimates (Monthly)
+- **Validator**: $100-300 (dependent on delegations and AKT price)
+- **Provider**: €80-150 (premium bare metal)
+- **Templates**: $50-200 (royalties and deployment fees)
+- **Total**: $230-650/month
+
+### Optimistic Estimates (Monthly)
+- **Validator**: $500-1,000 (high delegation, price appreciation)
+- **Provider**: €200-400 (high utilization, premium positioning)
+- **Templates**: $200-500 (popular templates, high usage)
+- **Total**: $900-1,900/month
+
+---
+
+## 🔧 Technical Infrastructure
+
+### Current Production Systems
+- **GCP VM**: Validator node (akash-usa)
+- **Hetzner Bare Metal**: Provider services (AX41-NVMe)
+- **Template Marketplace**: Metal validator template ready
+
+### Hardware Specifications
+- **Validator**: GCP e2-standard-4 (4 vCPU, 16GB RAM)
+- **Provider**: Hetzner AX41-NVMe (AMD Ryzen 5 3600, 64GB RAM, 2x512GB NVMe)
+- **Network**: 1 Gbit/s unmetered connection
+
+---
 
 ## 📚 Documentation
 
-See the `templates/metal-node-operator/` directory for detailed guides:
+### Project Documentation
+- **PROGRESS.md** - Overall project progress and milestones
+- **CHANGELOG.md** - Detailed project changelog
+- **guides/** - Comprehensive Akash guides
+- **technical/** - Technical documentation
 
-* **USER_JOURNEY.md** - Complete step-by-step user guide
-* **PROGRESS.md** - Development progress tracking
-* **CHANGELOG.md** - Detailed changelog
+### Template Documentation
+- **templates/metal-node-operator/README.MTL.md** - Metal validator template
+- **templates/metal-node-operator/TUTORIAL.MTL.md** - Step-by-step deployment
+- **templates/metal-node-operator/USER_JOURNEY.MTL.md** - Complete user guide
 
-## 🎉 Success Criteria
+---
 
-### Template Success
-- ✅ Node starts and syncs
-- ✅ Node ID is extracted and available
-- ✅ Staking keys are generated and displayed
-- ✅ All validator data is accessible in logs
-- ✅ Ports 9650/9651 are accessible
-- ✅ User has complete validator setup data
+## 🎉 Success Metrics
 
-### User Success
-- ✅ User gets Node ID from template
-- ✅ User completes validator setup on dashboard
-- ✅ Validator appears on Metal network
-- ✅ User earns staking rewards
+### All Three Prongs Complete ✅
+- **Validator**: Active and earning rewards
+- **Provider**: Operational and processing orders
+- **Templates**: Ready for community deployment
+
+### Revenue Streams Established
+- **Passive Income**: Validator staking rewards
+- **Service Revenue**: Provider lease income
+- **Template Royalties**: Deployment and usage fees
+
+---
 
 ## 🔗 Links
 
-* [Metal Blockchain](https://metalblockchain.org/)
-* [Akash Network](https://akash.network/)
-* [Metal Validator Setup](https://metalblockchain.org/validators)
+- [Akash Network](https://akash.network/)
+- [Metal Blockchain](https://metalblockchain.org/)
+- [Project Repository](https://github.com/VirgilBB/metal-validator-akash)
+
+---
 
 ## 📝 License
 
 MIT License - see LICENSE file for details.
 
-## 🚀 Template Status: 100% COMPLETE
+---
 
-This template is fully functional and ready for production use. It successfully:
+## 🚀 Project Status: 100% COMPLETE
 
-- ✅ Deploys MetalGo on Akash
-- ✅ Connects to Metal network
-- ✅ Generates staking keys
-- ✅ Extracts validator data
-- ✅ Provides complete setup information
+All three revenue streams are established and operational:
 
-**Ready to deploy and earn staking rewards!** 🎉
+- ✅ **Validator Operations** - Active and earning
+- ✅ **Provider Services** - Operational and processing
+- ✅ **Template Marketplace** - Ready for deployment
+
+**The Akash Network multi-revenue project is complete and generating income!** 🎉
