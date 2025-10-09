@@ -1,10 +1,10 @@
-# Metal Validator Template - Changelog
+# Metal Validator Template (.mtl) - Changelog
 
 All notable changes and progress in the Metal validator Akash template development.
 
 ## [2025-10-09] - Metal Validator Template Development - COMPLETED ✅
 
-### Metal Blockchain Validator Template - 100% COMPLETE
+### Metal Blockchain Validator Template (.mtl) - 100% COMPLETE
 - ✅ **Template Creation**: Successfully created Metal validator deployment template
 - ✅ **Container Issues Resolved**: Fixed file descriptor limits and permission errors
 - ✅ **MetalGo Installation**: Downloads and installs MetalGo v1.12.0-hotfix correctly
@@ -119,4 +119,4 @@ The Metal validator template is now fully functional and ready for production us
 - ✅ Includes comprehensive documentation
 - ✅ Ready for community adoption
 
-**The template is production-ready and available for the Metal blockchain community!** 🚀
+**The Metal validator template (.mtl) is production-ready and available for the Metal blockchain community!** 🚀

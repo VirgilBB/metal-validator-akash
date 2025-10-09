@@ -1,4 +1,4 @@
-# Metal Validator on Akash Network
+# Metal Validator (.mtl) on Akash Network
 
 A complete deployment template for running a Metal blockchain validator node on the Akash Network.
 
@@ -14,9 +14,9 @@ A complete deployment template for running a Metal blockchain validator node on 
 The deployment automatically provides:
 
 * ✅ **Node ID** - For validator registration (include full "NodeID-" prefix)
-* ✅ **Public Key** - For proof of possession (0x format)
+* ✅ **Public Key** - For proof of possession (hex format)
 * ✅ **Signature** - For proof of possession (hex format)
-* ✅ **Complete validator data** - Ready for Metal dashboard
+* ✅ **Complete validator data** - Ready for Metal (.mtl) dashboard
 
 ## 🔧 Template Features
 
@@ -59,7 +59,7 @@ After deployment, you'll see clean validator data:
 === METAL TESTNET VALIDATOR SETUP DATA ===
 ========================================
 
-Copy the following data to your Metal TESTNET dashboard:
+Copy the following data to your Metal (.mtl) TESTNET dashboard:
 
 Node ID:
 NodeID-YourNodeIDHere
@@ -128,4 +128,4 @@ This template is fully functional and ready for production use. It successfully:
 - ✅ Extracts validator data
 - ✅ Provides complete setup information
 
-**Ready to deploy and earn staking rewards!** 🎉
+**Ready to deploy and earn METAL staking rewards!** 🎉

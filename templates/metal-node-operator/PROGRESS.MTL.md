@@ -1,7 +1,7 @@
-# Metal Validator Template - Development Progress
+# Metal Validator Template (.mtl) - Development Progress
 
 ## 🎯 Project Overview
-**Goal**: Create a complete Metal blockchain validator deployment template for Akash Network  
+**Goal**: Create a complete Metal blockchain validator deployment template (.mtl) for Akash Network  
 **Timeline**: October 2025  
 **Status**: 100% COMPLETE ✅
 
@@ -148,4 +148,4 @@
 - ✅ **User-friendly deployment** process
 - ✅ **Complete validator setup** workflow
 
-**The Metal validator template is ready for production use and community adoption!** 🚀
+**The Metal validator template (.mtl) is ready for production use and community adoption!** 🚀
