@@ -50,13 +50,12 @@ Signature: XXXXXXXXXXXX
 
 - **TUTORIAL.MTL.md** - Complete deployment guide
 - **QUICK_START.MTL.md** - Quick start instructions
-- **README.MTL.md** - Detailed template information
 
 ## 🔧 Technical Details
 
 - **Network**: Metal Mainnet (ID: 381931) / Testnet (ID: 381932)
 - **Container**: Ubuntu 22.04 with MetalGo v1.12.0-hotfix
-- **Resources**: 1 CPU, 1GB RAM, 10GB storage
+- **Resources**: 2 CPU, 4GB RAM, 120GB storage
 - **Ports**: 9650 (HTTP), 9651 (P2P)
 
 ## 🎉 Success Criteria
@@ -65,6 +64,12 @@ Signature: XXXXXXXXXXXX
 - ✅ Staking keys generated automatically
 - ✅ Clean validator data extraction
 - ✅ Ready for Metal dashboard registration
+
+## 🔗 Links
+
+- [Metal Blockchain](https://metalblockchain.org/)
+- [Akash Network](https://akash.network/)
+- [Metal Validator Setup](https://metalblockchain.org/validators)
 
 ---
 
