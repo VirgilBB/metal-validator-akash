@@ -1,0 +1,99 @@
+version: "2.0"
+
+services:
+  metal-blockchain:
+    image: ubuntu:22.04
+    command: ["/bin/bash", "-c", "echo 'Installing MetalGo on Ubuntu for TESTNET...' && apt-get update -o Acquire::http::Pipeline-Depth=0 && apt-get install -y --no-install-recommends wget curl jq ca-certificates openssl && echo 'Downloading MetalGo...' && wget --no-check-certificate -O metalgo.tar.gz https://github.com/MetalBlockchain/metalgo/releases/download/v1.12.0-hotfix/metalgo-linux-amd64-v1.12.0-hotfix.tar.gz && echo 'Extracting MetalGo...' && tar -xzf metalgo.tar.gz && mv metalgo-v1.12.0-hotfix/metalgo /usr/local/bin/ && chmod +x /usr/local/bin/metalgo && rm -rf metalgo-v1.12.0-hotfix metalgo.tar.gz && echo 'Creating data directory...' && mkdir -p /root/.metalgo && echo 'Getting public IP...' && PUBLIC_IP=$(curl -s ifconfig.me) && echo 'Starting MetalGo node on TESTNET with IP:' $PUBLIC_IP && /usr/local/bin/metalgo --network-id=381932 --public-ip=$PUBLIC_IP --http-host=0.0.0.0 --http-port=9650 --log-level=info & METAL_PID=$! && echo 'Waiting for MetalGo to fully initialize...' && sleep 30 && echo 'Checking if staking keys exist...' && while [ ! -f /root/.metalgo/staking/staker.key ]; do echo 'Waiting for staking keys...' && sleep 5; done && echo 'Staking keys found! Waiting for API to be ready...' && sleep 20 && echo '' && echo '========================================' && echo '=== METAL TESTNET VALIDATOR SETUP DATA ===' && echo '========================================' && echo '' && echo 'Copy the following data to your Metal TESTNET dashboard:' && echo '' && NODE_ID=$(curl -s -X POST -H 'Content-Type: application/json' -d '{\"jsonrpc\":\"2.0\",\"method\":\"info.getNodeID\",\"params\":{},\"id\":1}' http://localhost:9650/ext/info 2>/dev/null | jq -r '.result.nodeID' 2>/dev/null || echo 'not-found') && echo 'Node ID:' && echo $NODE_ID && echo '' && echo 'Proof of Possession (Public Key):' && openssl x509 -in /root/.metalgo/staking/staker.crt -pubkey -noout | openssl pkey -pubin -outform DER | od -An -tx1 | tr -d ' \n' | sed 's/^/0x/' && echo '' && echo '' && echo 'Signature:' && openssl x509 -in /root/.metalgo/staking/staker.crt -text -noout | awk '/Signature Value:/{flag=1; next} flag==1 && /^[[:space:]]*[0-9a-fA-F:]+/{gsub(/[[:space:]:]/,\"\"); printf \"%s\", $0; next} flag==1 && /^[[:space:]]*$/{flag=0; print \"\"; exit} flag==1 && !/^[[:space:]]*[0-9a-fA-F:]+/{flag=0; print \"\"; exit}' | tr -d '\n' | sed 's/^/0x/' && echo '' && echo '' && echo '========================================' && echo '=== TESTNET DEPLOYMENT COMPLETE ===' && echo '========================================' && echo 'Your Metal TESTNET node is running and ready for validator setup!' && echo 'Network: Metal Tahoe Testnet (Network ID: 381932)' && echo 'RPC URL: https://tahoe.metalblockchain.org/ext/bc/C/rpc' && echo 'Explorer: https://tahoe.metalscan.io/' && echo '' && wait $METAL_PID"]
+    env:
+      - METAL_NETWORK_ID=381932
+      - METAL_PUBLIC_IP=AKASH_CLUSTER_PUBLIC_HOSTNAME
+      - METAL_HTTP_HOST=0.0.0.0
+      - METAL_HTTP_PORT=9650
+      - METAL_P2P_PORT=9651
+      - METAL_STAKING_ENABLED=true
+      - METAL_BOOTSTRAP_IPS=
+      - METAL_BOOTSTRAP_IDS=
+    expose:
+      - port: 9650
+        as: 9650
+        to:
+          - global: true
+        proto: tcp
+      - port: 9651  
+        as: 9651
+        to:
+          - global: true
+        proto: tcp
+
+  nginx-proxy:
+    image: nginx:alpine
+    command: ["/bin/sh", "-c", "echo 'Waiting for MetalGo to start...' && sleep 120 && echo 'Configuring nginx...' && echo 'worker_processes 1;' > /etc/nginx/nginx.conf && echo 'events { worker_connections 1024; }' >> /etc/nginx/nginx.conf && echo 'http {' >> /etc/nginx/nginx.conf && echo '    upstream metal_rpc { server metal-blockchain:9650; }' >> /etc/nginx/nginx.conf && echo '    server {' >> /etc/nginx/nginx.conf && echo '        listen 80;' >> /etc/nginx/nginx.conf && echo '        location / { proxy_pass http://metal_rpc; }' >> /etc/nginx/nginx.conf && echo '        location /ext/info { proxy_pass http://metal_rpc/ext/info; }' >> /etc/nginx/nginx.conf && echo '    }' >> /etc/nginx/nginx.conf && echo '    server {' >> /etc/nginx/nginx.conf && echo '        listen 9650;' >> /etc/nginx/nginx.conf && echo '        location / { proxy_pass http://metal_rpc; }' >> /etc/nginx/nginx.conf && echo '    }' >> /etc/nginx/nginx.conf && echo '}' >> /etc/nginx/nginx.conf && echo 'Starting nginx...' && nginx -g 'daemon off;'"]
+    env:
+      - METAL_NODE_HOST=metal-blockchain
+      - METAL_RPC_PORT=9650
+      - METAL_P2P_PORT=9651
+    expose:
+      - port: 80
+        as: 80
+        to:
+          - global: true
+        proto: tcp
+      - port: 443
+        as: 443
+        to:
+          - global: true
+        proto: tcp
+      - port: 9650
+        as: 9650
+        to:
+          - global: true
+        proto: tcp
+      - port: 9651
+        as: 9651
+        to:
+          - global: true
+        proto: tcp
+    depends_on:
+      - metal-blockchain
+
+profiles:
+  compute:
+    metal-blockchain:
+      resources:
+        cpu:
+          units: 2.0
+        memory:
+          size: 4Gi
+        storage:
+          - size: 120Gi
+
+    nginx-proxy:
+      resources:
+        cpu:
+          units: 0.5
+        memory:
+          size: 1Gi
+        storage:
+          - size: 3Gi
+
+  placement:
+    any-provider:
+      attributes: {}
+      pricing:
+        metal-blockchain:
+          denom: uakt
+          amount: 2000
+        nginx-proxy:
+          denom: uakt
+          amount: 500
+
+deployment:
+  metal-blockchain:
+    any-provider:
+      profile: metal-blockchain
+      count: 1
+  nginx-proxy:
+    any-provider:
+      profile: nginx-proxy
+      count: 1
+
