@@ -1,6 +1,12 @@
+<div align="center">
+
 # Metal Validator on Akash
 
-Deploy a Metal blockchain validator node on Akash Network in minutes.
+<img src="assets/metalblockchain-logo.png" alt="Metal Blockchain Logo" width="200" height="200">
+
+**Deploy a Metal blockchain validator node on Akash Network in minutes.**
+
+</div>
 
 ## 🚀 Quick Deploy
 
