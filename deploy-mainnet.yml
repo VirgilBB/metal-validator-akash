@@ -13,7 +13,7 @@ services:
       - |
         echo 'Installing MetalGo on Ubuntu for MAINNET...'
         apt-get update -o Acquire::http::Pipeline-Depth=0
-        apt-get install -y --no-install-recommends wget curl jq ca-certificates dnsutils netcat-openbsd
+        apt-get install -y --no-install-recommends wget curl jq ca-certificates
         
         echo 'Downloading MetalGo v1.12.0-hotfix...'
         wget --no-check-certificate -O metalgo.tar.gz \
@@ -49,9 +49,9 @@ services:
         
         echo "Detected public IP: $PUBLIC_IP"
         
-        # Start MetalGo with detected public IP (same as testnet approach)
+        # Start MetalGo with detected public IP (let it use default mainnet bootstrap)
         /usr/local/bin/metalgo \
-          --network-id=381931 \
+          --network-id=mainnet \
           --public-ip=$PUBLIC_IP \
           --http-host=0.0.0.0 \
           --http-port=9650 \
