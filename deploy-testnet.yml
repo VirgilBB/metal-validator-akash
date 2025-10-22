@@ -1,60 +1,187 @@
 version: "2.0"
 
+endpoints:
+  metal_endpoint:
+    kind: ip
+
 services:
   metal-blockchain:
     image: ubuntu:22.04
-    command: ["/bin/bash", "-c", "echo 'Installing MetalGo on Ubuntu for TESTNET...' && apt-get update -o Acquire::http::Pipeline-Depth=0 && apt-get install -y --no-install-recommends wget curl jq ca-certificates openssl && echo 'Downloading MetalGo...' && wget --no-check-certificate -O metalgo.tar.gz https://github.com/MetalBlockchain/metalgo/releases/download/v1.12.0-hotfix/metalgo-linux-amd64-v1.12.0-hotfix.tar.gz && echo 'Extracting MetalGo...' && tar -xzf metalgo.tar.gz && mv metalgo-v1.12.0-hotfix/metalgo /usr/local/bin/ && chmod +x /usr/local/bin/metalgo && rm -rf metalgo-v1.12.0-hotfix metalgo.tar.gz && echo 'Creating data directory...' && mkdir -p /root/.metalgo && echo 'Getting public IP...' && PUBLIC_IP=$(curl -s ifconfig.me) && echo 'Starting MetalGo node on TESTNET with IP:' $PUBLIC_IP && /usr/local/bin/metalgo --network-id=381932 --public-ip=$PUBLIC_IP --http-host=0.0.0.0 --http-port=9650 --log-level=info & METAL_PID=$! && echo 'Waiting for MetalGo to fully initialize...' && sleep 30 && echo 'Checking if staking keys exist...' && while [ ! -f /root/.metalgo/staking/staker.key ]; do echo 'Waiting for staking keys...' && sleep 5; done && echo 'Staking keys found! Waiting for API to be ready...' && sleep 20 && echo '' && echo '========================================' && echo '=== METAL TESTNET VALIDATOR SETUP DATA ===' && echo '========================================' && echo '' && echo 'Copy the following data to your Metal TESTNET dashboard:' && echo '' && NODE_ID=$(curl -s -X POST -H 'Content-Type: application/json' -d '{\"jsonrpc\":\"2.0\",\"method\":\"info.getNodeID\",\"params\":{},\"id\":1}' http://localhost:9650/ext/info 2>/dev/null | jq -r '.result.nodeID' 2>/dev/null || echo 'not-found') && echo 'Node ID:' && echo $NODE_ID && echo '' && echo 'Proof of Possession (Public Key):' && openssl x509 -in /root/.metalgo/staking/staker.crt -pubkey -noout | openssl pkey -pubin -outform DER | od -An -tx1 | tr -d ' \n' | sed 's/^/0x/' && echo '' && echo '' && echo 'Signature:' && openssl x509 -in /root/.metalgo/staking/staker.crt -text -noout | awk '/Signature Value:/{flag=1; next} flag==1 && /^[[:space:]]*[0-9a-fA-F:]+/{gsub(/[[:space:]:]/,\"\"); printf \"%s\", $0; next} flag==1 && /^[[:space:]]*$/{flag=0; print \"\"; exit} flag==1 && !/^[[:space:]]*[0-9a-fA-F:]+/{flag=0; print \"\"; exit}' | tr -d '\n' | sed 's/^/0x/' && echo '' && echo '' && echo '========================================' && echo '=== TESTNET DEPLOYMENT COMPLETE ===' && echo '========================================' && echo 'Your Metal TESTNET node is running and ready for validator setup!' && echo 'Network: Metal Tahoe Testnet (Network ID: 381932)' && echo 'RPC URL: https://tahoe.metalblockchain.org/ext/bc/C/rpc' && echo 'Explorer: https://tahoe.metalscan.io/' && echo '' && wait $METAL_PID"]
-    env:
-      - METAL_NETWORK_ID=381932
-      - METAL_PUBLIC_IP=AKASH_CLUSTER_PUBLIC_HOSTNAME
-      - METAL_HTTP_HOST=0.0.0.0
-      - METAL_HTTP_PORT=9650
-      - METAL_P2P_PORT=9651
-      - METAL_STAKING_ENABLED=true
-      - METAL_BOOTSTRAP_IPS=
-      - METAL_BOOTSTRAP_IDS=
+    command:
+      - /bin/bash
+      - -c
+      - |
+        echo 'Installing MetalGo on Ubuntu for TESTNET...'
+        apt-get update -o Acquire::http::Pipeline-Depth=0
+        apt-get install -y --no-install-recommends wget curl jq ca-certificates
+        
+        echo 'Downloading MetalGo v1.12.0-hotfix...'
+        wget --no-check-certificate -O metalgo.tar.gz \
+          https://github.com/MetalBlockchain/metalgo/releases/download/v1.12.0-hotfix/metalgo-linux-amd64-v1.12.0-hotfix.tar.gz
+        
+        echo 'Extracting MetalGo...'
+        tar -xzf metalgo.tar.gz
+        mv metalgo-v1.12.0-hotfix/metalgo /usr/local/bin/
+        chmod +x /usr/local/bin/metalgo
+        rm -rf metalgo-v1.12.0-hotfix metalgo.tar.gz
+        
+        echo 'Creating data directory...'
+        mkdir -p /root/.metalgo
+        
+        echo 'Setting file descriptor limits...'
+        ulimit -n 65536
+        echo "File descriptor limit set to: $(ulimit -n)"
+        
+        echo '========================================='
+        echo 'Starting MetalGo node on TESTNET'
+        echo 'Using automatic public IP resolution'
+        echo '========================================='
+        
+        # Get public IP from external service
+        echo 'Detecting public IP address...'
+        PUBLIC_IP=$(curl -4 -s --max-time 10 https://api.ipify.org)
+        if [ -z "$PUBLIC_IP" ]; then
+          PUBLIC_IP=$(curl -4 -s --max-time 10 https://ifconfig.me)
+        fi
+        if [ -z "$PUBLIC_IP" ]; then
+          PUBLIC_IP=$(curl -4 -s --max-time 10 https://icanhazip.com)
+        fi
+        
+        echo "Detected public IP: $PUBLIC_IP"
+        
+        # Start MetalGo with detected public IP
+        /usr/local/bin/metalgo \
+          --network-id=tahoe \
+          --public-ip=$PUBLIC_IP \
+          --http-host=0.0.0.0 \
+          --http-port=9650 \
+          --staking-port=9651 \
+          --log-level=info &
+        
+        METAL_PID=$!
+        
+        echo 'Waiting for MetalGo to initialize (30 seconds)...'
+        sleep 30
+        
+        echo 'Waiting for API to be ready...'
+        for i in {1..20}; do
+          if curl -s --max-time 5 http://localhost:9650/ext/health > /dev/null 2>&1; then
+            echo 'API is ready!'
+            break
+          fi
+          echo "Waiting for API... attempt $i/20"
+          sleep 15
+        done
+        
+        echo 'Waiting for blockchain to bootstrap...'
+        while true; do
+          RESPONSE=$(curl -s --max-time 10 -X POST \
+            -H 'Content-Type: application/json' \
+            -d '{"jsonrpc":"2.0","method":"info.isBootstrapped","params":{"chain":"X"},"id":1}' \
+            http://localhost:9650/ext/info 2>/dev/null)
+          
+          if echo "$RESPONSE" | jq -e '.result.isBootstrapped == true' > /dev/null 2>&1; then
+            echo 'Bootstrap complete!'
+            break
+          fi
+          echo 'Still bootstrapping... (this can take several minutes)'
+          sleep 30
+        done
+        
+        # Wait a bit more for P2P connections to establish
+        echo 'Waiting for P2P connections to establish...'
+        sleep 15
+        
+        # Get node information
+        echo 'Retrieving node information...'
+        NODE_INFO=$(curl -s -X POST -H 'Content-Type: application/json' \
+          -d '{"jsonrpc":"2.0","method":"info.getNodeID","params":{},"id":1}' \
+          http://localhost:9650/ext/info 2>/dev/null)
+        
+        NODE_ID=$(echo "$NODE_INFO" | jq -r '.result.nodeID // "N/A"' 2>/dev/null)
+        BLS_KEY=$(echo "$NODE_INFO" | jq -r '.result.nodePOP.publicKey // "N/A"' 2>/dev/null)
+        BLS_SIG=$(echo "$NODE_INFO" | jq -r '.result.nodePOP.proofOfPossession // "N/A"' 2>/dev/null)
+        
+        # Get peer information
+        PEERS_INFO=$(curl -s -X POST -H 'Content-Type: application/json' \
+          -d '{"jsonrpc":"2.0","method":"info.peers","params":{},"id":1}' \
+          http://localhost:9650/ext/info 2>/dev/null)
+        
+        PEER_COUNT=$(echo "$PEERS_INFO" | jq -r '.result.numPeers // 0' 2>/dev/null)
+        if [ -z "$PEER_COUNT" ] || [ "$PEER_COUNT" = "null" ]; then
+          PEER_COUNT=0
+        fi
+        
+        # Get advertised IP
+        ADVERTISED_IP="$PUBLIC_IP"
+        
+        echo ""
+        echo "========================================"
+        echo "=== METAL TESTNET VALIDATOR SETUP DATA ==="
+        echo "========================================"
+        echo ""
+        echo "Copy the following data to your Metal TESTNET dashboard:"
+        echo ""
+        echo "Node ID:"
+        echo "$NODE_ID"
+        echo ""
+        echo "BLS Public Key:"
+        echo "$BLS_KEY"
+        echo ""
+        echo "BLS Signature (Proof of Possession):"
+        echo "$BLS_SIG"
+        echo ""
+        echo "========================================"
+        echo "=== NETWORK STATUS ==="
+        echo "========================================"
+        echo ""
+        echo "Public IP: $ADVERTISED_IP"
+        echo "Connected Peers: $PEER_COUNT"
+        echo "Network: Metal Testnet (Tahoe)"
+        echo "RPC Endpoint: http://<your-deployment-url>:9650"
+        echo "P2P Port: 9651"
+        echo ""
+        echo "Explorer: https://tahoe.metalscan.io/"
+        echo "Search for your Node ID in the explorer to verify connectivity"
+        echo ""
+        echo "========================================"
+        echo "=== TESTNET DEPLOYMENT COMPLETE ==="
+        echo "========================================"
+        echo ""
+        
+        if [ "$PEER_COUNT" -gt 0 ] 2>/dev/null; then
+          echo "✅ SUCCESS: Node is connected to $PEER_COUNT peer(s)"
+          echo "✅ Your node should appear as 'Connected' in the explorer"
+        else
+          echo "⚠️  WARNING: Node has 0 peers (may still be connecting)"
+          echo "⚠️  Wait 5-10 minutes and check the explorer"
+        fi
+        
+        echo ""
+        echo "Keeping node running... (check logs for ongoing activity)"
+        
+        # Keep container running and show periodic status
+        while true; do
+          sleep 300  # Every 5 minutes
+          CURRENT_PEERS=$(curl -s -X POST -H 'Content-Type: application/json' \
+            -d '{"jsonrpc":"2.0","method":"info.peers","params":{},"id":1}' \
+            http://localhost:9650/ext/info | jq -r '.result.numPeers // 0')
+          echo "[$(date)] Status: Connected to $CURRENT_PEERS peer(s)"
+        done
+    
     expose:
       - port: 9650
         as: 9650
         to:
           - global: true
+            ip: metal_endpoint
         proto: tcp
       - port: 9651  
         as: 9651
         to:
           - global: true
+            ip: metal_endpoint
         proto: tcp
-
-  nginx-proxy:
-    image: nginx:alpine
-    command: ["/bin/sh", "-c", "echo 'Waiting for MetalGo to start...' && sleep 120 && echo 'Configuring nginx...' && echo 'worker_processes 1;' > /etc/nginx/nginx.conf && echo 'events { worker_connections 1024; }' >> /etc/nginx/nginx.conf && echo 'http {' >> /etc/nginx/nginx.conf && echo '    upstream metal_rpc { server metal-blockchain:9650; }' >> /etc/nginx/nginx.conf && echo '    server {' >> /etc/nginx/nginx.conf && echo '        listen 80;' >> /etc/nginx/nginx.conf && echo '        location / { proxy_pass http://metal_rpc; }' >> /etc/nginx/nginx.conf && echo '        location /ext/info { proxy_pass http://metal_rpc/ext/info; }' >> /etc/nginx/nginx.conf && echo '    }' >> /etc/nginx/nginx.conf && echo '    server {' >> /etc/nginx/nginx.conf && echo '        listen 9650;' >> /etc/nginx/nginx.conf && echo '        location / { proxy_pass http://metal_rpc; }' >> /etc/nginx/nginx.conf && echo '    }' >> /etc/nginx/nginx.conf && echo '}' >> /etc/nginx/nginx.conf && echo 'Starting nginx...' && nginx -g 'daemon off;'"]
-    env:
-      - METAL_NODE_HOST=metal-blockchain
-      - METAL_RPC_PORT=9650
-      - METAL_P2P_PORT=9651
-    expose:
-      - port: 80
-        as: 80
-        to:
-          - global: true
-        proto: tcp
-      - port: 443
-        as: 443
-        to:
-          - global: true
-        proto: tcp
-      - port: 9650
-        as: 9650
-        to:
-          - global: true
-        proto: tcp
-      - port: 9651
-        as: 9651
-        to:
-          - global: true
-        proto: tcp
-    depends_on:
-      - metal-blockchain
 
 profiles:
   compute:
@@ -67,33 +194,15 @@ profiles:
         storage:
           - size: 120Gi
 
-    nginx-proxy:
-      resources:
-        cpu:
-          units: 0.5
-        memory:
-          size: 1Gi
-        storage:
-          - size: 3Gi
-
   placement:
-    any-provider:
-      attributes: {}
+    akash:
       pricing:
         metal-blockchain:
           denom: uakt
           amount: 2000
-        nginx-proxy:
-          denom: uakt
-          amount: 500
 
 deployment:
   metal-blockchain:
-    any-provider:
+    akash:
       profile: metal-blockchain
       count: 1
-  nginx-proxy:
-    any-provider:
-      profile: nginx-proxy
-      count: 1
-

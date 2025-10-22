@@ -20,7 +20,7 @@ Before you begin, make sure you have:
 2. **Create Deployment**
    - Click "Deploy" button
    - Select "Upload SDL"
-   - Choose `deploy.yml` (mainnet) or `deploy-testnet.yml` (testnet)
+   - Choose `deploy-testnet.yml` (testnet) or `deploy-mainnet.yml` (mainnet)
 
 3. **Review and Accept Bid**
    - Wait for providers to bid (~30 seconds)
@@ -35,11 +35,11 @@ Before you begin, make sure you have:
 
 1. **Deploy**
    ```bash
-   # For mainnet
-   akash tx deployment create deploy.yml --from your-wallet --yes
-   
-   # For testnet
+   # For testnet (recommended for testing)
    akash tx deployment create deploy-testnet.yml --from your-wallet --yes
+   
+   # For mainnet (production)
+   akash tx deployment create deploy-mainnet.yml --from your-wallet --yes
    ```
 
 2. **Accept Bid**
@@ -60,7 +60,8 @@ Watch your deployment logs for this section:
 
 ```
 ========================================
-=== METAL VALIDATOR SETUP DATA ===
+=== METAL TESTNET VALIDATOR SETUP DATA ===
+=== METAL MAINNET VALIDATOR SETUP DATA ===
 ========================================
 
 Copy the following data to your Metal dashboard:
@@ -68,14 +69,14 @@ Copy the following data to your Metal dashboard:
 Node ID:
 NodeID-ABC123...
 
-Proof of Possession (Public Key):
+BLS Public Key:
 0x3059301306...
 
-Signature:
+BLS Signature (Proof of Possession):
 0x3045022100...
 
 ========================================
-=== DEPLOYMENT COMPLETE ===
+=== TESTNET/MAINNET DEPLOYMENT COMPLETE ===
 ========================================
 ```
 
@@ -83,8 +84,8 @@ Signature:
 
 When you see the above output:
 1. **Copy Node ID** - The full `NodeID-...` string
-2. **Copy Public Key** - The `0x...` hex string
-3. **Copy Signature** - The signature `0x...` hex string
+2. **Copy BLS Public Key** - The `0x...` hex string
+3. **Copy BLS Signature** - The signature `0x...` hex string
 
 ## 🎯 Register Your Validator
 
@@ -102,8 +103,8 @@ When you see the above output:
 
 Fill in the following:
 - **Node ID**: Paste from logs
-- **Public Key**: Paste from logs  
-- **Signature**: Paste from logs
+- **BLS Public Key**: Paste from logs  
+- **BLS Signature**: Paste from logs
 - **Validator Name**: Choose a name
 - **Staking Amount**: How much METAL to stake
 - **Staking Duration**: How long to stake
@@ -134,7 +135,7 @@ Fill in the following:
 ## 💰 Costs
 
 ### Akash Network
-- **Estimated**: $60-100/month
+- **Estimated**: $2-5/month
 - **Depends on**: Provider, resources, market conditions
 
 ### Metal Staking
