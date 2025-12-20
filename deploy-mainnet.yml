@@ -37,25 +37,16 @@ services:
         echo 'Using automatic public IP resolution'
         echo '========================================='
         
-        # Get public IP from external service
-        echo 'Detecting public IP address...'
-        PUBLIC_IP=$(curl -4 -s --max-time 10 https://api.ipify.org)
-        if [ -z "$PUBLIC_IP" ]; then
-          PUBLIC_IP=$(curl -4 -s --max-time 10 https://ifconfig.me)
-        fi
-        if [ -z "$PUBLIC_IP" ]; then
-          PUBLIC_IP=$(curl -4 -s --max-time 10 https://icanhazip.com)
-        fi
+        # Start MetalGo WITHOUT specifying public IP - let it auto-detect via STUN
+        echo 'Starting MetalGo with NAT traversal (auto-detect public IP)...'
+        echo 'MetalGo will use STUN to discover the actual public IP'
         
-        echo "Detected public IP: $PUBLIC_IP"
-        
-        # Start MetalGo with detected public IP (let it use default mainnet bootstrap)
         /usr/local/bin/metalgo \
           --network-id=mainnet \
-          --public-ip=$PUBLIC_IP \
           --http-host=0.0.0.0 \
           --http-port=9650 \
           --staking-port=9651 \
+          --staking-host=0.0.0.0 \
           --log-level=info &
         
         METAL_PID=$!
@@ -112,8 +103,15 @@ services:
           PEER_COUNT=0
         fi
         
-        # Get advertised IP
-        ADVERTISED_IP="$PUBLIC_IP"
+        # Get the public IP that MetalGo actually detected
+        METALGO_STATUS=$(curl -s -X POST -H 'Content-Type: application/json' \
+          -d '{"jsonrpc":"2.0","method":"info.getNodeIP","params":{},"id":1}' \
+          http://localhost:9650/ext/info 2>/dev/null)
+        
+        ADVERTISED_IP=$(echo "$METALGO_STATUS" | jq -r '.result.ip // "auto-detected"' 2>/dev/null)
+        if [ "$ADVERTISED_IP" = "null" ] || [ -z "$ADVERTISED_IP" ]; then
+          ADVERTISED_IP="auto-detected (check Akash Console for actual IP)"
+        fi
         
         echo ""
         echo "========================================"
