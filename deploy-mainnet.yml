@@ -34,36 +34,24 @@ services:
         
         echo '========================================='
         echo 'Starting MetalGo node on MAINNET'
-        echo 'Detecting Akash-assigned public IP...'
+        echo 'Using dynamic IP discovery via OpenDNS'
         echo '========================================='
         
-        # Detect public IP using multiple fallback services
-        PUBLIC_IP=""
-        for service in "ifconfig.me" "api.ipify.org" "icanhazip.com"; do
-          IP=$(curl -4 -s --max-time 5 https://$service 2>/dev/null || curl -4 -s --max-time 5 http://$service 2>/dev/null)
-          if [ -n "$IP" ] && [[ "$IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            PUBLIC_IP="$IP"
-            echo "✅ Detected public IP: $PUBLIC_IP (from $service)"
-            break
-          fi
-        done
+        # Use dynamic IP discovery instead of static IP
+        # This allows MetalGo to continuously update its public IP
+        # which works better with Akash's IP lease system
         
-        if [ -z "$PUBLIC_IP" ]; then
-          echo "⚠️  WARNING: Could not detect public IP, starting without --public-ip flag"
-          PUBLIC_IP_FLAG=""
-        else
-          PUBLIC_IP_FLAG="--public-ip=$PUBLIC_IP"
-          echo "🌐 Will advertise IP: $PUBLIC_IP"
-        fi
+        echo 'Starting MetalGo with dynamic IP discovery...'
+        echo 'MetalGo will auto-detect and update public IP dynamically'
         
-        # Start MetalGo with explicit public IP
+        # Start MetalGo with dynamic-public-ip flag
         /usr/local/bin/metalgo \
           --network-id=mainnet \
           --http-host=0.0.0.0 \
           --http-port=9650 \
           --staking-port=9651 \
           --staking-host=0.0.0.0 \
-          $PUBLIC_IP_FLAG \
+          --dynamic-public-ip=opendns \
           --log-level=info &
         
         METAL_PID=$!
@@ -120,11 +108,14 @@ services:
           PEER_COUNT=0
         fi
         
-        # Use the PUBLIC_IP we detected earlier
-        if [ -n "$PUBLIC_IP" ]; then
-          ADVERTISED_IP="$PUBLIC_IP"
-        else
-          ADVERTISED_IP="Not detected (check Akash Console)"
+        # Get the dynamically discovered public IP from MetalGo
+        NODE_IP_INFO=$(curl -s -X POST -H 'Content-Type: application/json' \
+          -d '{"jsonrpc":"2.0","method":"info.getNodeIP","params":{},"id":1}' \
+          http://localhost:9650/ext/info 2>/dev/null)
+        
+        ADVERTISED_IP=$(echo "$NODE_IP_INFO" | jq -r '.result.ip // "Dynamically discovered"' 2>/dev/null)
+        if [ "$ADVERTISED_IP" = "null" ] || [ -z "$ADVERTISED_IP" ]; then
+          ADVERTISED_IP="Dynamically discovered (check logs or Akash Console)"
         fi
         
         echo ""
