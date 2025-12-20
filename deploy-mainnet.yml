@@ -193,14 +193,21 @@ profiles:
           - size: 120Gi
 
   placement:
-    akash:
+    akash-providers:
+      attributes:
+        host: akash
+        ip-lease: true
+      signedBy:
+        anyOf:
+          - "akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63"
+          - "akash18qa2a2q2gx9njm4lqp2qn9u4m7u9r5q2j8g7d8"
       pricing:
         metal-blockchain:
           denom: uakt
-          amount: 2000
+          amount: 3000
 
 deployment:
   metal-blockchain:
-    akash:
+    akash-providers:
       profile: metal-blockchain
       count: 1
