@@ -172,13 +172,13 @@ services:
         as: 9650
         to:
           - global: true
-        ip: metal_endpoint
+            ip: metal_endpoint
         proto: tcp
       - port: 9651  
         as: 9651
         to:
           - global: true
-        ip: metal_endpoint
+            ip: metal_endpoint
         proto: tcp
 
 profiles:
