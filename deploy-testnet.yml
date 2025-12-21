@@ -34,53 +34,23 @@ services:
         
         echo '========================================='
         echo 'Starting MetalGo node on TESTNET'
-        echo 'Attempting to detect MetalLB LoadBalancer IP...'
+        echo 'NO IP detection - Akash handles routing via MetalLB'
         echo '========================================='
         
-        # Try to get the LoadBalancer IP from Kubernetes API
-        # This requires the service account token to be mounted
-        PUBLIC_IP=""
+        # Start MetalGo without --public-ip flag
+        # Akash MetalLB handles IP routing at the service layer
+        # The node will connect OUT to peers (functional) but may show
+        # as "Not Connected" in explorer due to Akash infrastructure limitations
         
-        # Method 1: Query Kubernetes API for service LoadBalancer IP
-        if [ -f /var/run/secrets/kubernetes.io/serviceaccount/token ]; then
-          echo "Kubernetes service account found, querying API..."
-          K8S_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-          K8S_API="https://kubernetes.default.svc"
-          NAMESPACE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace 2>/dev/null || echo "default")
-          
-          # Query for metal-blockchain service LoadBalancer IP
-          LB_IP=$(curl -s -k -H "Authorization: Bearer $K8S_TOKEN" \
-            "$K8S_API/api/v1/namespaces/$NAMESPACE/services/metal-blockchain" 2>/dev/null | \
-            jq -r '.status.loadBalancer.ingress[0].ip // empty' 2>/dev/null)
-          
-          if [ -n "$LB_IP" ] && [[ "$LB_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            PUBLIC_IP="$LB_IP"
-            echo "Detected LoadBalancer IP from Kubernetes API: $PUBLIC_IP"
-          fi
-        fi
+        echo 'Starting MetalGo with automatic NAT traversal...'
         
-        # Start MetalGo
-        if [ -n "$PUBLIC_IP" ]; then
-          echo "Starting MetalGo with detected IP: $PUBLIC_IP"
-          /usr/local/bin/metalgo \
-            --network-id=tahoe \
-            --http-host=0.0.0.0 \
-            --http-port=9650 \
-            --staking-port=9651 \
-            --staking-host=0.0.0.0 \
-            --public-ip=$PUBLIC_IP \
-            --log-level=info &
-        else
-          echo "Could not detect LoadBalancer IP - starting without --public-ip"
-          echo "MetalGo will use NAT traversal to discover public IP"
-          /usr/local/bin/metalgo \
-            --network-id=tahoe \
-            --http-host=0.0.0.0 \
-            --http-port=9650 \
-            --staking-port=9651 \
-            --staking-host=0.0.0.0 \
-            --log-level=info &
-        fi
+        /usr/local/bin/metalgo \
+          --network-id=tahoe \
+          --http-host=0.0.0.0 \
+          --http-port=9650 \
+          --staking-port=9651 \
+          --staking-host=0.0.0.0 \
+          --log-level=info &
         
         METAL_PID=$!
         
@@ -136,20 +106,16 @@ services:
           PEER_COUNT=0
         fi
         
-        # Get the public IP we passed to MetalGo (if any)
-        if [ -n "$PUBLIC_IP" ] && [[ "$PUBLIC_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-          ADVERTISED_IP="$PUBLIC_IP (from Kubernetes API)"
+        # Get IP that MetalGo detected
+        NODE_IP_INFO=$(curl -s -X POST -H 'Content-Type: application/json' \
+          -d '{"jsonrpc":"2.0","method":"info.getNodeIP","params":{},"id":1}' \
+          http://localhost:9650/ext/info 2>/dev/null)
+        DETECTED_IP=$(echo "$NODE_IP_INFO" | jq -r '.result.ip // empty' 2>/dev/null)
+        
+        if [ -n "$DETECTED_IP" ]; then
+          ADVERTISED_IP="$DETECTED_IP (auto-discovered)"
         else
-          # Try to get it from MetalGo's info API
-          NODE_IP_INFO=$(curl -s -X POST -H 'Content-Type: application/json' \
-            -d '{"jsonrpc":"2.0","method":"info.getNodeIP","params":{},"id":1}' \
-            http://localhost:9650/ext/info 2>/dev/null)
-          DETECTED_IP=$(echo "$NODE_IP_INFO" | jq -r '.result.ip // empty' 2>/dev/null)
-          if [ -n "$DETECTED_IP" ]; then
-            ADVERTISED_IP="$DETECTED_IP (auto-discovered by MetalGo)"
-          else
-            ADVERTISED_IP="Check Akash Console for actual IP"
-          fi
+          ADVERTISED_IP="Check Akash Console for MetalLB IP"
         fi
         
         echo ""
