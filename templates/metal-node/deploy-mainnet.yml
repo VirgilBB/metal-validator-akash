@@ -34,23 +34,45 @@ services:
         
         echo '========================================='
         echo 'Starting MetalGo node on MAINNET'
-        echo 'MetalLB will handle public IP routing'
+        echo 'Detecting public IP via OpenDNS resolver...'
         echo '========================================='
         
-        # DO NOT specify --public-ip flag
-        # Akash MetalLB handles IP forwarding automatically
-        # The node binds to 0.0.0.0 and MetalLB routes traffic
+        # Use OpenDNS resolver to detect public IP
+        # This returns the IP that external services see when we connect
+        # Works correctly with MetalLB IP forwarding
+        PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com 2>/dev/null || \
+                    dig +short myip.opendns.com @resolver2.opendns.com 2>/dev/null)
         
-        echo 'Starting MetalGo (MetalLB handles public IP)...'
+        # If dig is not available, install dnsutils
+        if [ -z "$PUBLIC_IP" ]; then
+          echo "Installing dnsutils for IP detection..."
+          apt-get update -qq && apt-get install -y -qq dnsutils > /dev/null 2>&1
+          PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com 2>/dev/null)
+        fi
         
-        # Start MetalGo - let Akash handle IP routing via MetalLB
-        /usr/local/bin/metalgo \
-          --network-id=mainnet \
-          --http-host=0.0.0.0 \
-          --http-port=9650 \
-          --staking-port=9651 \
-          --staking-host=0.0.0.0 \
-          --log-level=info &
+        echo "Detected public IP: $PUBLIC_IP"
+        
+        # Start MetalGo with explicit public IP
+        if [ -n "$PUBLIC_IP" ] && [[ "$PUBLIC_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo "Starting MetalGo with public IP: $PUBLIC_IP"
+          /usr/local/bin/metalgo \
+            --network-id=mainnet \
+            --http-host=0.0.0.0 \
+            --http-port=9650 \
+            --staking-port=9651 \
+            --staking-host=0.0.0.0 \
+            --public-ip=$PUBLIC_IP \
+            --log-level=info &
+        else
+          echo "WARNING: Could not detect public IP, starting without --public-ip flag"
+          /usr/local/bin/metalgo \
+            --network-id=mainnet \
+            --http-host=0.0.0.0 \
+            --http-port=9650 \
+            --staking-port=9651 \
+            --staking-host=0.0.0.0 \
+            --log-level=info &
+        fi
         
         METAL_PID=$!
         
@@ -106,8 +128,12 @@ services:
           PEER_COUNT=0
         fi
         
-        # Public IP is handled by Akash MetalLB - check Akash Console for assigned IP
-        ADVERTISED_IP="Check Akash Console (MetalLB assigned)"
+        # Get the public IP we passed to MetalGo
+        if [ -n "$PUBLIC_IP" ] && [[ "$PUBLIC_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          ADVERTISED_IP="$PUBLIC_IP"
+        else
+          ADVERTISED_IP="Not detected (check Akash Console)"
+        fi
         
         echo ""
         echo "========================================"
