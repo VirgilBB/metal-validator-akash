@@ -205,7 +205,7 @@ profiles:
       pricing:
         metal-blockchain:
           denom: uakt
-          amount: 3000
+          amount: 100
 
 deployment:
   metal-blockchain:
