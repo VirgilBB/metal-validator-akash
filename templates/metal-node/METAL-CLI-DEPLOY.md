@@ -41,7 +41,7 @@ export AKASH_GAS_ADJUSTMENT="1.5"
 export AKASH_GAS_PRICES="0.025uakt"
 
 # Wallet
-export AKASH_KEY_NAME="my-wallet"
+export AKASH_KEY_NAME="myWallet"
 export AKASH_KEYRING_BACKEND="os"
 ```
 
@@ -352,7 +352,7 @@ export AKASH_NODE="https://rpc.akashnet.net:443"
 export AKASH_GAS="auto"
 export AKASH_GAS_ADJUSTMENT="1.5"
 export AKASH_GAS_PRICES="0.025uakt"
-export AKASH_KEY_NAME="my-wallet"
+export AKASH_KEY_NAME="myWallet"
 export AKASH_KEYRING_BACKEND="os"
 
 # Set wallet address automatically
