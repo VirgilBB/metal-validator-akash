@@ -6,8 +6,17 @@ Complete step-by-step guide to deploy your Metal validator on Akash Network **Te
 
 Before you begin, make sure you have:
 - ✅ Akash wallet with AKT tokens (for deployment costs)
-- ✅ Metal wallet (for staking and rewards - get test tokens from faucet)
+- ✅ Metal wallet (for staking and rewards)
 - ✅ Access to Akash Console (no CLI required)
+- ✅ Test METAL tokens (minimum 1 METAL required)
+
+### Get Test Tokens
+
+**Testnet Faucet:**
+- Visit: https://faucet.metalblockchain.org/
+- Request test METAL tokens (2 tokens per day available)
+- Wait for tokens to arrive in your wallet
+- **Minimum Required**: 1 METAL token to deploy a validator
 
 ## 🚀 Deploy Your Validator
 
@@ -84,20 +93,13 @@ When you see the above output:
 
 ## 🎯 Register Your Validator
 
-### Step 1: Get Test Tokens
-
-**Testnet Faucet:**
-- Visit: https://faucet.metalblockchain.org/
-- Request test METAL tokens
-- Wait for tokens to arrive in your wallet
-
-### Step 2: Go to Metal Dashboard
+### Step 1: Go to Metal Dashboard
 
 **Testnet:**
 - Dashboard: https://tahoe.metalblockchain.org/wallet/advanced
 - Explorer: https://tahoe-explorer.metalblockchain.org/validators
 
-### Step 3: Complete Registration Form
+### Step 2: Complete Registration Form
 
 Fill in the following:
 - **Node ID**: Paste from logs (use the FINAL Node ID after IP update)
@@ -108,7 +110,7 @@ Fill in the following:
 - **Staking Duration**: How long to stake
 - **Reward Address**: Where to receive rewards
 
-### Step 4: Submit Transaction
+### Step 3: Submit Transaction
 
 - Review all details
 - Sign the transaction with your Metal wallet
