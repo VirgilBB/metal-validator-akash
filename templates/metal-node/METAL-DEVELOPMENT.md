@@ -1,8 +1,11 @@
 # Metal Validator Development Guide
 
 **Project:** Metal Blockchain Validator on Akash Network  
-**Status:** ✅ Active Development  
-**Last Updated:** 2025-12-20
+**Status:** ✅ **PRODUCTION READY - Testnet & Mainnet Working!**  
+**Last Updated:** 2025-12-26
+**Last Successful Testnet:** 2025-12-25 (NodeID-EAYugeuESJfbBQs2qGM6BagAC7JK5XNbd, 78%+ uptime, Connected)
+**Last Successful Mainnet:** 2025-12-26 (NodeID-KCN65VuqFCAd1ti6dCD2KThJfoR8QhVCE, 169 peers, IP correct)
+**Deployment Process:** Two-step (deploy → update with IP) - works perfectly for both networks
 
 ---
 
@@ -46,13 +49,15 @@ cd /Users/vb/akash/templates/metal-node
 git add deploy-testnet.yml deploy-mainnet.yml
 git commit -m "🔧 FIX: Description of change"
 
-# 4. Sync to GitHub staging repo
-cd /Users/vb/akash/metal-node-staging/metal-validator-akash
-cp /Users/vb/akash/templates/metal-node/deploy-testnet.yml .
-cp /Users/vb/akash/templates/metal-node/deploy-mainnet.yml .
-git add -A
-git commit -m "🔧 FIX: Description of change"
-git push origin main
+# 4. Sync to GitHub staging repo (if using separate staging directory)
+# cd /Users/vb/akash/metal-node-staging/metal-validator-akash
+# cp /Users/vb/akash/templates/metal-node/deploy-testnet.yml .
+# cp /Users/vb/akash/templates/metal-node/deploy-mainnet.yml .
+# git add -A
+# git commit -m "🔧 FIX: Description of change"
+# git push origin main
+# 
+# Note: If metal-validator-akash folder was moved here, git operations are now in this directory
 
 # 5. Update documentation
 # - Update METAL-CHANGELOG.md with changes
@@ -104,9 +109,10 @@ akash tx deployment create deploy-testnet.yml \
 - **Logs show 0 peers** → Issue, check troubleshooting
 
 **4. Check Metal Explorer:**
-- Testnet: https://tahoe.metalscan.io/
-- Search for Node ID (from logs)
+- Testnet: https://tahoe-explorer.metalblockchain.org/validators
+- Search for Node ID (from logs - use FINAL Node ID after update, not initial)
 - Status should be **GREEN "Connected"**
+- **Note:** Uptime percentage is the real indicator - if >70%, node is working!
 
 ---
 
@@ -160,6 +166,12 @@ grep -i "refused" logs.txt
   --public-ip=$PUBLIC_IP \          # CRITICAL: Must be Akash-assigned IP
   --log-level=info                  # Can be: info, debug, trace
 ```
+
+**Version Note:**
+- **Template uses**: metalgo/1.12.0-hotfix (stable, tested version)
+- **Early deployers (August 2025)**: Some showed metalgo/1.12.2 in explorer
+- **Reason**: May have been Metal team testing different versions
+- **Current**: Template uses v1.12.0-hotfix which is working perfectly
 
 ### Akash SDL Parameters
 
@@ -332,8 +344,8 @@ git log --grep="NAT" --oneline
 
 ### Metal Blockchain
 - **Docs:** https://docs.metalblockchain.org/
-- **Testnet Explorer:** https://tahoe.metalscan.io/
-- **Mainnet Explorer:** https://metalscan.io/
+- **Testnet Explorer:** https://tahoe-explorer.metalblockchain.org/validators
+- **Mainnet Explorer:** https://explorer.metalblockchain.org/validators
 - **GitHub:** https://github.com/MetalBlockchain/metalgo
 
 ### Development Tools

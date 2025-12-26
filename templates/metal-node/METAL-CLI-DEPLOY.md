@@ -29,6 +29,24 @@ provider-services version
 
 ### 1. Configure Environment
 
+**For TESTNET - Recommended for testing:**
+```bash
+# Network configuration (TESTNET)
+export AKASH_NET="https://raw.githubusercontent.com/akash-network/net/main/testnet-8"
+export AKASH_CHAIN_ID="testnet-8"
+export AKASH_NODE="https://testnetrpc.akashnet.net:443"
+
+# Gas settings
+export AKASH_GAS="auto"
+export AKASH_GAS_ADJUSTMENT="1.5"
+export AKASH_GAS_PRICES="0.025uakt"
+
+# Wallet
+export AKASH_KEY_NAME="myWallet"
+export AKASH_KEYRING_BACKEND="file"
+```
+
+**For MAINNET (Production):**
 ```bash
 # Network configuration (MAINNET)
 export AKASH_NET="https://raw.githubusercontent.com/akash-network/net/main/mainnet"
@@ -42,22 +60,36 @@ export AKASH_GAS_PRICES="0.025uakt"
 
 # Wallet
 export AKASH_KEY_NAME="myWallet"
-export AKASH_KEYRING_BACKEND="os"
+export AKASH_KEYRING_BACKEND="file"
 ```
+
+**Note:** For testing Metal testnet nodes, use **Akash testnet (sandbox)** to avoid spending real AKT.
 
 ### 2. Create or Import Wallet
 
-**New wallet:**
+**First, check if you already have wallets:**
+```bash
+provider-services keys list
+```
+
+**If you see a wallet name, use it:**
+```bash
+export AKASH_KEY_NAME="your-existing-wallet-name"  # Use the name from the list
+```
+
+**If you need to create a new wallet:**
 ```bash
 provider-services keys add $AKASH_KEY_NAME
 # SAVE THE MNEMONIC!
 ```
 
-**Import existing:**
+**Or import existing wallet:**
 ```bash
 provider-services keys add $AKASH_KEY_NAME --recover
 # Enter your 24-word mnemonic
 ```
+
+**Note:** The default wallet name in this guide is `"myWallet"`. Replace it with your actual wallet name throughout, or set `export AKASH_KEY_NAME="your-wallet-name"` once and use `$AKASH_KEY_NAME` in all commands.
 
 ### 3. Get Wallet Address
 
@@ -344,8 +376,25 @@ export AKASH_NODE="https://akash-rpc.polkachu.com:443"
 
 Add to `~/.bashrc` or `~/.zshrc`:
 
+**For TESTNET:**
 ```bash
-# Akash Network Configuration
+# Akash Network Configuration (TESTNET)
+export AKASH_NET="https://raw.githubusercontent.com/akash-network/net/main/testnet-8"
+export AKASH_CHAIN_ID="testnet-8"
+export AKASH_NODE="https://testnetrpc.akashnet.net:443"
+export AKASH_GAS="auto"
+export AKASH_GAS_ADJUSTMENT="1.5"
+export AKASH_GAS_PRICES="0.025uakt"
+export AKASH_KEY_NAME="myWallet"
+export AKASH_KEYRING_BACKEND="file"
+
+# Set wallet address automatically
+export AKASH_ACCOUNT_ADDRESS="$(provider-services keys show $AKASH_KEY_NAME -a 2>/dev/null)"
+```
+
+**For MAINNET:**
+```bash
+# Akash Network Configuration (MAINNET)
 export AKASH_NET="https://raw.githubusercontent.com/akash-network/net/main/mainnet"
 export AKASH_CHAIN_ID="akashnet-2"
 export AKASH_NODE="https://rpc.akashnet.net:443"
@@ -353,7 +402,7 @@ export AKASH_GAS="auto"
 export AKASH_GAS_ADJUSTMENT="1.5"
 export AKASH_GAS_PRICES="0.025uakt"
 export AKASH_KEY_NAME="myWallet"
-export AKASH_KEYRING_BACKEND="os"
+export AKASH_KEYRING_BACKEND="file"
 
 # Set wallet address automatically
 export AKASH_ACCOUNT_ADDRESS="$(provider-services keys show $AKASH_KEY_NAME -a 2>/dev/null)"
