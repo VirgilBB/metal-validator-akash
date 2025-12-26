@@ -7,11 +7,9 @@ Complete step-by-step guide to deploy your Metal validator on Akash Network **Te
 Before you begin, make sure you have:
 - ✅ Akash wallet with AKT tokens (for deployment costs)
 - ✅ Metal wallet (for staking and rewards - get test tokens from faucet)
-- ✅ Akash CLI installed OR access to Akash Console
+- ✅ Access to Akash Console (no CLI required)
 
-## 🚀 Deployment Options
-
-### Option A: Akash Console (Easiest - No CLI Required)
+## 🚀 Deploy Your Validator
 
 1. **Go to Akash Console**
    - Visit: https://console.akash.network/
@@ -31,24 +29,6 @@ Before you begin, make sure you have:
 4. **Wait for Deployment**
    - Deployment takes 5-10 minutes
    - Click "Logs" to monitor progress
-
-### Option B: Akash CLI
-
-1. **Deploy**
-   ```bash
-   # For testnet (recommended for testing)
-   provider-services tx deployment create deploy-testnet.yml --from your-wallet --yes
-   ```
-
-2. **Accept Bid**
-   ```bash
-   akash tx market lease create --dseq [DSEQ] --from your-wallet --yes
-   ```
-
-3. **Check Logs**
-   ```bash
-   akash provider lease-logs --dseq [DSEQ] --from your-wallet
-   ```
 
 ## ⚠️ IMPORTANT: Two-Step Deployment Process
 
