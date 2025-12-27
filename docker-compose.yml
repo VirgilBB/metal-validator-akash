@@ -7,11 +7,11 @@ services:
       - "9650:9650"
       - "9651:9651"
     environment:
-      - METAL_NETWORK_ID=381932
+      - METAL_NETWORK_ID=tahoe
       - METAL_PUBLIC_IP=localhost
       - METAL_HTTP_HOST=0.0.0.0
       - METAL_HTTP_PORT=9650
       - METAL_P2P_PORT=9651
     volumes:
       - ./data:/root/.metalgo
-    command: ["/bin/bash", "-c", "echo 'Installing MetalGo...' && apt-get update && apt-get install -y wget curl jq ca-certificates && wget -O metalgo.tar.gz https://github.com/MetalBlockchain/metalgo/releases/download/v1.12.0-hotfix/metalgo-linux-amd64-v1.12.0-hotfix.tar.gz && tar -xzf metalgo.tar.gz && mv metalgo-v1.12.0-hotfix/metalgo /usr/local/bin/ && chmod +x /usr/local/bin/metalgo && rm -rf metalgo-v1.12.0-hotfix metalgo.tar.gz && echo 'Starting MetalGo testnet node...' && /usr/local/bin/metalgo --network-id=381932 --public-ip=localhost --http-host=0.0.0.0 --http-port=9650 --log-level=info"]
+    command: ["/bin/bash", "-c", "echo 'Installing MetalGo...' && apt-get update && apt-get install -y wget curl jq ca-certificates && wget -O metalgo.tar.gz https://github.com/MetalBlockchain/metalgo/releases/download/v1.12.0-hotfix/metalgo-linux-amd64-v1.12.0-hotfix.tar.gz && tar -xzf metalgo.tar.gz && mv metalgo-v1.12.0-hotfix/metalgo /usr/local/bin/ && chmod +x /usr/local/bin/metalgo && rm -rf metalgo-v1.12.0-hotfix metalgo.tar.gz && echo 'Starting MetalGo testnet node...' && /usr/local/bin/metalgo --network-id=tahoe --public-ip=localhost --http-host=0.0.0.0 --http-port=9650 --staking-port=9651 --staking-host=0.0.0.0 --log-level=info"]
