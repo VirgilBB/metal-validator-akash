@@ -7,6 +7,13 @@ endpoints:
 services:
   metal-blockchain:
     image: ubuntu:22.04
+    env:
+      # Manual IP Override (OPTIONAL): Set METAL_PUBLIC_IP if auto-detection fails
+      # 1. Deploy first (get IP assigned from Akash Console)
+      # 2. Update this line to: - METAL_PUBLIC_IP=<your-loadbalancer-ip>
+      # 3. Update deployment with the modified YAML
+      # Or set in Akash Console → Deployment → Environment Variables
+      - METAL_PUBLIC_IP=
     command:
       - /bin/bash
       - -c
@@ -34,15 +41,33 @@ services:
         
         echo '========================================='
         echo 'Starting MetalGo node on MAINNET'
-        echo 'NO IP detection - Akash handles routing via MetalLB'
+        echo 'Detecting public IP for proper P2P connectivity'
         echo '========================================='
         
-        # Start MetalGo without --public-ip flag
-        # Akash MetalLB handles IP routing at the service layer
-        # The node will connect OUT to peers (functional) but may show
-        # as "Not Connected" in explorer due to Akash infrastructure limitations
+        # Detect public IP - Use manual override if set, otherwise let MetalGo auto-detect
+        PUBLIC_IP=""
+        PUBLIC_IP_FLAG=""
         
-        echo 'Starting MetalGo with automatic NAT traversal...'
+        # Method 1: Manual override via environment variable (HIGHEST PRIORITY)
+        if [ -n "$METAL_PUBLIC_IP" ]; then
+          if [[ "$METAL_PUBLIC_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            PUBLIC_IP="$METAL_PUBLIC_IP"
+            PUBLIC_IP_FLAG="--public-ip=$PUBLIC_IP"
+            echo "✅ Using manually specified public IP: $PUBLIC_IP"
+            echo "   (Set via METAL_PUBLIC_IP environment variable)"
+          else
+            echo "⚠️  WARNING: METAL_PUBLIC_IP is set but invalid format: $METAL_PUBLIC_IP"
+            echo "   Ignoring and using automatic detection..."
+          fi
+        fi
+        
+        if [ -z "$PUBLIC_IP_FLAG" ]; then
+          echo "⚠️  Starting MetalGo without --public-ip flag"
+          echo "⚠️  MetalGo will use built-in NAT traversal"
+          echo "⚠️  For best results, set METAL_PUBLIC_IP=<loadbalancer-ip> from Akash Console"
+        fi
+        
+        echo 'Starting MetalGo...'
         
         /usr/local/bin/metalgo \
           --network-id=mainnet \
@@ -50,6 +75,7 @@ services:
           --http-port=9650 \
           --staking-port=9651 \
           --staking-host=0.0.0.0 \
+          $PUBLIC_IP_FLAG \
           --log-level=info &
         
         METAL_PID=$!
@@ -106,16 +132,21 @@ services:
           PEER_COUNT=0
         fi
         
-        # Get IP that MetalGo detected
-        NODE_IP_INFO=$(curl -s -X POST -H 'Content-Type: application/json' \
-          -d '{"jsonrpc":"2.0","method":"info.getNodeIP","params":{},"id":1}' \
-          http://localhost:9650/ext/info 2>/dev/null)
-        DETECTED_IP=$(echo "$NODE_IP_INFO" | jq -r '.result.ip // empty' 2>/dev/null)
-        
-        if [ -n "$DETECTED_IP" ]; then
-          ADVERTISED_IP="$DETECTED_IP (auto-discovered)"
+        # Use the IP we detected and passed to MetalGo
+        if [ -n "$PUBLIC_IP" ]; then
+          ADVERTISED_IP="$PUBLIC_IP (explicitly set)"
         else
-          ADVERTISED_IP="Check Akash Console for MetalLB IP"
+          # Fallback: Get IP that MetalGo detected
+          NODE_IP_INFO=$(curl -s -X POST -H 'Content-Type: application/json' \
+            -d '{"jsonrpc":"2.0","method":"info.getNodeIP","params":{},"id":1}' \
+            http://localhost:9650/ext/info 2>/dev/null)
+          DETECTED_IP=$(echo "$NODE_IP_INFO" | jq -r '.result.ip // empty' 2>/dev/null)
+          
+          if [ -n "$DETECTED_IP" ]; then
+            ADVERTISED_IP="$DETECTED_IP (auto-discovered)"
+          else
+            ADVERTISED_IP="Check Akash Console for MetalLB IP"
+          fi
         fi
         
         echo ""
@@ -125,13 +156,13 @@ services:
         echo ""
         echo "Copy the following data to your Metal MAINNET dashboard:"
         echo ""
-        echo "Node ID:"
+        echo "Node ID"
         echo "$NODE_ID"
         echo ""
-        echo "BLS Public Key:"
+        echo "Proof of Possession - Public Key"
         echo "$BLS_KEY"
         echo ""
-        echo "BLS Signature (Proof of Possession):"
+        echo "Proof of Possession - Signature"
         echo "$BLS_SIG"
         echo ""
         echo "========================================"
@@ -144,7 +175,7 @@ services:
         echo "RPC Endpoint: http://<your-deployment-url>:9650"
         echo "P2P Port: 9651"
         echo ""
-        echo "Explorer: https://metalscan.io/"
+        echo "Explorer: https://explorer.metalblockchain.org/validators"
         echo "Search for your Node ID in the explorer to verify connectivity"
         echo ""
         echo "========================================"
