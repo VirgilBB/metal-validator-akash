@@ -1,5 +1,7 @@
 # Metal Blockchain Validator
 
+<img src="assets/metalblockchain-logo.png" alt="Metal Blockchain Logo" width="200" height="200">
+
 Deploy a Metal blockchain validator node on Akash Network with dedicated IP support for optimal P2P connectivity.
 
 ## Quick Deploy
