@@ -97,7 +97,24 @@ Proof of Possession - Public Key
 Proof of Possession - Signature
 0x8981dc303bab3a634f27f288313e801d1f9da065713f6e10817a7c248d0e39878a534d2b04217af834562d587be3507f0d006c7c8aab9343af8531b91ab9b0ca9b0d919135c1bcc478ea4742d16fcc4a1f54c99b27b319ed2e16646f963994ff
 
+Public IP (RPC Endpoint)
+184.105.162.180:9650
+
+Note: Save this IP for reference (useful for Grafana monitoring template)
+
 Register your validator: https://wallet.metalblockchain.org/
+
+========================================
+VERIFICATION
+========================================
+
+✅ Node is operational
+✅ Connected to 167 peer(s)
+✅ Good connectivity (50+ peers)
+
+✅ IP configured: 184.105.162.180:9650
+   (Verify this matches your IP in Akash Console → Leases → IP(s))
+
 ========================================
 ```
 
