@@ -315,8 +315,11 @@ services:
         echo ""
         if [ "$PEER_COUNT" -gt 0 ] 2>/dev/null; then
           echo "✅ Node is running"
-          echo "✅ Connected to $PEER_COUNT peers"
+          echo "✅ Connected to $PEER_COUNT peers (outbound connections active)"
           echo "✅ Network: Metal Mainnet"
+          if [ "$PEER_COUNT" -lt 50 ] 2>/dev/null; then
+            echo "⚠️  Note: Low peer count - complete IP update for better connectivity"
+          fi
         else
           echo "⚠️  Node is starting up..."
           echo "⚠️  Connected to $PEER_COUNT peers (may still be connecting)"
@@ -339,7 +342,8 @@ services:
         echo "3. After updating, wait 2-3 minutes then check logs for verification:"
         echo "   - Look for '✅ Using manually specified public IP' message"
         echo "   - Verify the IP matches your LoadBalancer IP from step 1"
-        echo "   - Check peer count increases (should see 100+ peers)"
+          echo "   - Peer count may already be high (outbound connections work before IP update)"
+          echo "   - IP update ensures explorer status and optimal incoming connections"
         echo "4. Register validator using the data above"
         echo ""
         echo "⚠️  No IP assigned? Redeploy on a different provider."
