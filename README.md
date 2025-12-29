@@ -1,8 +1,25 @@
-# Metal Blockchain Validator
+<p align="center">
+  <img src="assets/metalblockchain-logo.png" alt="Metal Blockchain Logo" width="200" />
+</p>
 
-<img src="assets/metalblockchain-logo.png" alt="Metal Blockchain Logo" width="200" height="200">
+# Deploy Metal Blockchain Validator on Akash Network
 
-Deploy a Metal blockchain validator node on Akash Network with dedicated IP support for optimal P2P connectivity.
+Launch a Metal blockchain validator node in minutes on Akash's decentralized cloud for a fraction of traditional VPS costs. Metal blockchain, developed by Metallicus, powers a compliant Digital Asset Banking Network connecting traditional finance with blockchain technology for regulated institutions. This deployment includes dedicated IP support for optimal peer-to-peer connectivity and validator performance.
+
+## Requirements
+
+Before deploying, ensure you have:
+
+- **Akash wallet** with AKT tokens (for deployment costs)
+- **Metal wallet** with 2,000+ METAL tokens (for mainnet staking)
+- **Provider** with `ip-lease: true` attribute (for dedicated IP)
+- **Access to Akash Console** (no CLI required)
+- **5-10 minutes** for deployment and bootstrap
+
+## Cost
+
+- **Mainnet**: Approximately $5-15/month on Akash Network
+- Varies by provider and market conditions
 
 ## Quick Deploy
 
@@ -56,15 +73,6 @@ Connected Peers: 20+
 Network: Metal Mainnet
 ```
 
-## Testnet Deployment
-
-For testnet deployment, see [`deploy-testnet.yml`](deploy-testnet.yml) in this repository.
-
-**Testnet GitHub Raw URL:**
-```
-https://raw.githubusercontent.com/VirgilBB/metal-validator-akash/main/deploy-testnet.yml
-```
-
 ## Key Features
 
 - **Dedicated IP Support**: Uses `endpoints` with `kind: ip` for optimal P2P connectivity
@@ -73,19 +81,6 @@ https://raw.githubusercontent.com/VirgilBB/metal-validator-akash/main/deploy-tes
 - **File Descriptor Limits**: Increased to 65536 to prevent "too many open files" errors
 - **Peer Monitoring**: Real-time peer count monitoring every 5 minutes
 - **Bootstrap Detection**: Waits for blockchain to fully bootstrap before reporting success
-
-## Requirements
-
-- Akash wallet with AKT tokens
-- Metal wallet with 2,000+ METAL tokens (for mainnet staking)
-- Provider with `ip-lease: true` attribute (for dedicated IP)
-- Access to Akash Console (no CLI required)
-- 5-10 minutes for deployment and bootstrap
-
-## Cost
-
-- **Mainnet**: Approximately $5-15/month on Akash Network
-- Varies by provider and market conditions
 
 ## Resources
 
@@ -111,6 +106,7 @@ https://raw.githubusercontent.com/VirgilBB/metal-validator-akash/main/deploy-tes
 
 ## Need Help?
 
+- **Direct Support:** Email [cerebro@cerebro.host](mailto:cerebro@cerebro.host)
 - **Issues?** Open an issue in this repo
 - **Questions?** Join [Akash Discord](https://discord.akash.network/)
 - **Metal Support?** Join [Metal Discord](https://discord.gg/metalblockchain)

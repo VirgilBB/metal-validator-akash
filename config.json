@@ -1,6 +1,5 @@
 {
-  "name": "Metal Blockchain Validator",
-  "description": "Deploy a Metal blockchain validator node on Akash Network with dedicated IP support for optimal P2P connectivity.",
-  "logo": "assets/metalblockchain-logo.png",
-  "category": "Blockchain"
+  "$schema": "../config.schema.json",
+  "ssh": false,
+  "logoUrl": "https://raw.githubusercontent.com/VirgilBB/metal-validator-akash/main/assets/metalblockchain-logo.png"
 }
