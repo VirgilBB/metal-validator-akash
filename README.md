@@ -69,8 +69,8 @@ Proof of Possession - Public Key
 Proof of Possession - Signature
 0x3045022100...
 
-Copy all three values above to register your validator at:
-https://validator.metalblockchain.org
+Copy all three values above to register your validator on the Metal wallet dashboard:
+https://wallet.metalblockchain.org/
 
 ========================================
 NETWORK STATUS
@@ -100,7 +100,7 @@ Verify your node: https://explorer.metalblockchain.org/validators
 - Proof of Possession - Public Key  
 - Proof of Possession - Signature
 
-All three are required to register your validator on the [Metal Validator Dashboard](https://validator.metalblockchain.org).
+All three are required to register your validator on the [Metal Wallet Dashboard](https://wallet.metalblockchain.org/).
 
 **Note:** Use the final Node ID, Public Key, and Signature from logs AFTER the IP update completes.
 
@@ -135,7 +135,7 @@ All three are required to register your validator on the [Metal Validator Dashbo
 
 - [Metal Blockchain](https://www.metalblockchain.org/)
 - [Metal Mainnet Explorer](https://explorer.metalblockchain.org/)
-- [Metal Validator Dashboard](https://validator.metalblockchain.org/)
+- [Metal Wallet Dashboard](https://wallet.metalblockchain.org/)
 - [Akash Network](https://akash.network/)
 - [Akash Console](https://console.akash.network/)
 
@@ -161,6 +161,6 @@ Redeploy on a different provider.
 - **Direct Support**: Email cerebro@cerebro.host
 - **Issues?** Open an issue in [this repository](https://github.com/VirgilBB/Metal-Validator)
 - **Questions?** Join [Akash Discord](https://discord.gg/akash)
-- **Metal Support?** Join [Metal Discord](https://discord.gg/metal)
+- **Metal Support?** Join [Metal Discord](https://discord.gg/B2QDmgf)
 
 Deploy, copy your validator data, register on Metal dashboard, and start earning rewards!
