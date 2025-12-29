@@ -43,8 +43,13 @@ The template requires a two-step deployment process:
    - Find the `METAL_PUBLIC_IP` environment variable
    - Enter your LoadBalancer IP from step 2
    - **Example:** If your IP is `162.230.144.169`, set: `METAL_PUBLIC_IP=162.230.144.169`
+   - **Note:** Use just the IP address (no port). Your RPC endpoint will be `http://162.230.144.169:9650`
    - Click "Update" to save
-4. **Use final Node ID** - Copy Node ID from logs AFTER the update completes
+4. **Copy validator data** - After the update completes, copy ALL THREE pieces of data from logs:
+   - **Node ID** (e.g., `NodeID-ABC123...`)
+   - **Proof of Possession - Public Key** (e.g., `0x3059301306...`)
+   - **Proof of Possession - Signature** (e.g., `0x3045022100...`)
+   - **All three are required** for validator registration on the Metal dashboard
 
 **Why two steps?** The LoadBalancer IP is assigned AFTER deployment, so we need to update with the correct IP.
 
@@ -74,7 +79,13 @@ Proof of Possession - Signature
 Public IP: 62.3.50.131
 Connected Peers: 20+
 Network: Metal Mainnet
+RPC Endpoint: http://62.3.50.131:9650
+P2P Port: 9651
 ```
+
+**Access Your Node:**
+- **RPC Endpoint:** `http://<your-ip>:9650` (Example: `http://162.230.144.169:9650`)
+- **P2P Port:** `9651`
 
 ## Key Features
 
@@ -105,7 +116,7 @@ Network: Metal Mainnet
 **Solution**: Ensure you completed the two-step process and set the correct LoadBalancer IP in `METAL_PUBLIC_IP`. Example: `METAL_PUBLIC_IP=162.230.144.169` (use your actual IP from Akash Console).
 
 ### Problem: Initial Node ID changes after update
-**Solution**: This is normal. Use the final Node ID from logs AFTER the IP update completes.
+**Solution**: This is normal. Use the final Node ID, Public Key, and Signature from logs AFTER the IP update completes. All three are required for validator registration.
 
 ## Need Help?
 
@@ -116,4 +127,4 @@ Network: Metal Mainnet
 
 ---
 
-Deploy, copy your validator data, register on Metal dashboard, and start earning rewards!
+Deploy, copy your validator data (Node ID, Public Key, and Signature), register on Metal dashboard, and start earning rewards!
