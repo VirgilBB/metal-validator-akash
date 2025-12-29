@@ -29,7 +29,7 @@ Before deploying, ensure you have:
 
 **GitHub Raw URL:**
 ```
-https://raw.githubusercontent.com/VirgilBB/metal-validator-akash/main/deploy.yaml
+https://raw.githubusercontent.com/VirgilBB/Metal-Validator/main/deploy.yaml
 ```
 
 ## Two-Step Deployment Process
