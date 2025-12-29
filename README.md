@@ -4,25 +4,24 @@
 
 # Deploy Metal Blockchain Validator on Akash Network
 
-Launch a Metal blockchain validator node in minutes on Akash's decentralized cloud for a fraction of traditional VPS costs. Metal blockchain, developed by Metallicus, powers a compliant Digital Asset Banking Network connecting traditional finance with blockchain technology for regulated institutions. This deployment includes dedicated IP support for optimal peer-to-peer connectivity and validator performance.
+Launch a Metal blockchain validator node in minutes on Akash's decentralized cloud for a fraction of traditional VPS costs. Metal blockchain, developed by Metallicus, powers a compliant Digital Asset Banking Network connecting traditional finance with blockchain technology for regulated institutions.
 
 ## Requirements
 
 Before deploying, ensure you have:
 
-- **Akash wallet** with AKT tokens (for deployment costs)
-- **Metal wallet** with 2,000+ METAL tokens (for mainnet staking)
-- **Access to Akash Console** (no CLI required)
-- **5-10 minutes** for deployment and bootstrap
+- Akash wallet with AKT tokens (for deployment costs)
+- Metal wallet with 2,000+ METAL tokens (for mainnet staking)
+- Access to Akash Console (no CLI required)
+- 5-10 minutes for deployment and bootstrap
 
 ## Cost
 
-- **Mainnet**: Approximately $5-15/month on Akash Network
-- Varies by provider and market conditions
+Mainnet: Approximately $5-15/month on Akash Network (varies by provider and market conditions)
 
 ## Quick Deploy
 
-1. Go to [Akash Console](https://console.akash.network/)
+1. Go to [Akash Console](https://console.akash.network)
 2. Click "Deploy" → "Upload SDL"
 3. Upload `deploy.yaml` from this repository
 4. Deploy and wait 5-10 minutes
@@ -34,38 +33,32 @@ https://raw.githubusercontent.com/VirgilBB/Metal-Validator/main/deploy.yaml
 
 ## Two-Step Deployment Process
 
-The template requires a two-step deployment process:
+The template requires a two-step deployment:
 
-1. **Deploy first** - Create deployment to get LoadBalancer IP assigned
-2. **Get IP** - Check your deployment logs for the "Public IP" value (e.g., `Public IP: 23.121.249.57`)
-   - **Option A:** If Akash Console → Deployment → "IP(s)" field shows an IP, use that
-   - **Option B:** If "IP(s)" field is empty, use the IP from your logs (shown as "Public IP: X.X.X.X")
-   - **Note:** The IP in logs is the actual LoadBalancer IP your node is using
-3. **Update deployment** - Add environment variable in Akash Console:
-   - Go to your deployment → Click "Update"
-   - Find the `METAL_PUBLIC_IP` environment variable
-   - Enter the IP from step 2 (just the IP, no port)
-   - **Example:** If your logs show `Public IP: 23.121.249.57`, set: `METAL_PUBLIC_IP=23.121.249.57`
-   - **Note:** Use just the IP address (no port). Your RPC endpoint will be `http://23.121.249.57:9650`
-   - Click "Update" to save
-4. **Copy validator data** - After the update completes, copy ALL THREE pieces of data from logs:
-   - **Node ID** (e.g., `NodeID-ABC123...`)
-   - **Proof of Possession - Public Key** (e.g., `0x3059301306...`)
-   - **Proof of Possession - Signature** (e.g., `0x3045022100...`)
-   - **All three are required** for validator registration on the Metal dashboard
+### Step 1: Initial Deployment
+Deploy the `deploy.yaml` to trigger LoadBalancer IP assignment. Wait 1-2 minutes for the IP to appear.
 
-**Why two steps?** The LoadBalancer IP is assigned AFTER deployment, so we need to update with the correct IP.
+### Step 2: Update with LoadBalancer IP
+1. In Akash Console → Your Deployment → "IP(s)" field, copy your assigned IP
+2. Click "Update" on your deployment
+3. Find the `METAL_PUBLIC_IP` environment variable
+4. Enter your LoadBalancer IP with port
+   - Example: `METAL_PUBLIC_IP=http://203.45.67.89:9650`
+5. Click "Update" to save
 
-**Important:** Do not wait too long between deployments. Update the deployment promptly after getting the LoadBalancer IP.
+**Why two steps?** The LoadBalancer IP is assigned after deployment, so we update the configuration once the IP is available.
 
-## What You Get
+**Important:** Update promptly after getting your IP—don't wait too long between deployments.
 
-After deployment, check your logs for:
+## Registering Your Validator
 
+After the update completes, check your deployment logs for your validator credentials:
 ```
 ========================================
-=== METAL MAINNET VALIDATOR SETUP DATA ===
+METAL MAINNET VALIDATOR - SETUP DATA
 ========================================
+
+⚠️  SAVE THIS DATA NOW ⚠️
 
 Node ID
 NodeID-ABC123...
@@ -76,25 +69,62 @@ Proof of Possession - Public Key
 Proof of Possession - Signature
 0x3045022100...
 
+Copy all three values above to register your validator at:
+https://validator.metalblockchain.org
+
 ========================================
-=== NETWORK STATUS ===
+NETWORK STATUS
 ========================================
-Public IP: 62.3.50.131
-Connected Peers: 20+
-Network: Metal Mainnet
-RPC Endpoint: http://62.3.50.131:9650
-P2P Port: 9651
+
+✅ Node is running
+✅ Connected to 167 peers
+✅ Network: Metal Mainnet
+
+Next steps:
+1. Go to Akash Console → Leases tab → Copy the IP address
+   (Example format: 203.45.67.89:9650)
+2. Update deployment: METAL_PUBLIC_IP=http://203.45.67.89:9650
+   (Replace with your actual IP from step 1)
+3. Register validator using the data above
+
+⚠️  No IP assigned? Redeploy on a different provider.
+
+Verify your node: https://explorer.metalblockchain.org/validators
+(Search for your Node ID after registration)
+
+========================================
 ```
 
-**Access Your Node:**
-- **RPC Endpoint:** `http://<your-ip>:9650` (Example: `http://203.45.67.89:9650`)
-  - Use the IP from your logs (shown as "Public IP: X.X.X.X")
-  - Port `9650` is for RPC/API access
-- **P2P Port:** `9651` (for peer-to-peer connections, not for direct access)
+**Copy all three pieces of data:**
+- Node ID
+- Proof of Possession - Public Key  
+- Proof of Possession - Signature
+
+All three are required to register your validator on the [Metal Validator Dashboard](https://validator.metalblockchain.org).
+
+**Note:** Use the final Node ID, Public Key, and Signature from logs AFTER the IP update completes.
+
+## Backup Your Validator (Highly Recommended)
+
+**⚠️ Highly Recommended:** Backup your validator credentials while your deployment is accessible. If your provider goes down or your deployment is lost, you can recover your validator identity instead of re-registering.
+
+### Quick Backup (2 minutes)
+
+1. In Akash Console → Your Deployment → **Shell** tab
+2. Run this command:
+```bash
+   curl -s https://raw.githubusercontent.com/VirgilBB/Metal-Validator/main/metal-node-recovery/backup-node.sh | bash
+```
+3. **Copy and securely save** the base64 backup string that appears
+4. Store it somewhere safe (encrypted password manager, secure note, etc.)
+
+**That's it.** If you ever need to recover your validator, contact cerebro@cerebro.host with your backup string.
+
+**Security:** Your backup contains your staking keys—keep it secure and never share it publicly.
 
 ## Key Features
 
-- **Dedicated IP Support**: Uses `endpoints` with `kind: ip` for optimal P2P connectivity
+- **Dedicated IP Support**: Uses endpoints with `kind: ip` for optimal P2P connectivity
 - **Advanced IP Detection**: Multi-method IP detection (Kubernetes API → Environment Variables → External Services)
 - **Manual IP Override**: Set `METAL_PUBLIC_IP` environment variable if auto-detection fails
 - **File Descriptor Limits**: Increased to 65536 to prevent "too many open files" errors
@@ -103,36 +133,34 @@ P2P Port: 9651
 
 ## Resources
 
-- [Metal Blockchain](https://metalblockchain.org/)
-- [Metal Mainnet Explorer](https://explorer.metalblockchain.org/validators)
-- [Metal Validator Dashboard](https://metalblockchain.org/validators)
+- [Metal Blockchain](https://www.metalblockchain.org/)
+- [Metal Mainnet Explorer](https://explorer.metalblockchain.org/)
+- [Metal Validator Dashboard](https://validator.metalblockchain.org/)
 - [Akash Network](https://akash.network/)
 - [Akash Console](https://console.akash.network/)
 
 ## Troubleshooting
 
-### Problem: Node shows "Not connected" in explorer
-**Solution**: Complete the two-step deployment process. In Akash Console → Update deployment, set `METAL_PUBLIC_IP` to your LoadBalancer IP:
-- **If "IP(s)" field shows an IP:** Use that IP
-- **If "IP(s)" field is empty:** Use the IP from your logs (shown as "Public IP: X.X.X.X")
-- Example: `METAL_PUBLIC_IP=23.121.249.57` (use your actual IP)
+**Node shows "Not connected" in explorer**  
+Complete the two-step deployment process. Set `METAL_PUBLIC_IP` to your LoadBalancer IP in Akash Console → Update deployment.
 
-### Problem: "too many open files" errors
-**Solution**: The template includes `ulimit -n 65536` to prevent this issue.
+**"too many open files" errors**  
+The template includes `ulimit -n 65536` to prevent this issue.
 
-### Problem: 0 peers connected
-**Solution**: Ensure you completed the two-step process and set the correct LoadBalancer IP in `METAL_PUBLIC_IP`. Example: `METAL_PUBLIC_IP=203.45.67.89` (use your actual IP from Akash Console).
+**0 peers connected**  
+Ensure you completed the two-step process and set the correct LoadBalancer IP in `METAL_PUBLIC_IP`.
 
-### Problem: Initial Node ID changes after update
-**Solution**: This is normal. Use the final Node ID, Public Key, and Signature from logs AFTER the IP update completes. All three are required for validator registration.
+**Initial Node ID changes after update**  
+This is normal. Use the final Node ID, Public Key, and Signature from logs AFTER the IP update completes.
+
+**No IP assigned in Leases tab**  
+Redeploy on a different provider.
 
 ## Need Help?
 
-- **Direct Support:** Email [cerebro@cerebro.host](mailto:cerebro@cerebro.host)
-- **Issues?** Open an issue in this repo
-- **Questions?** Join [Akash Discord](https://discord.akash.network/)
-- **Metal Support?** Join [Metal Discord](https://discord.gg/metalblockchain)
+- **Direct Support**: Email cerebro@cerebro.host
+- **Issues?** Open an issue in [this repository](https://github.com/VirgilBB/Metal-Validator)
+- **Questions?** Join [Akash Discord](https://discord.gg/akash)
+- **Metal Support?** Join [Metal Discord](https://discord.gg/metal)
 
----
-
-Deploy, copy your validator data (Node ID, Public Key, and Signature), register on Metal dashboard, and start earning rewards!
+Deploy, copy your validator data, register on Metal dashboard, and start earning rewards!
