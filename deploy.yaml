@@ -51,6 +51,8 @@ services:
         # Method 0: Manual override via environment variable (highest priority)
         # Users can set METAL_PUBLIC_IP in Akash Console when deploying
         # Accepts formats: IP only (203.45.67.89) or with http:// and port (http://203.45.67.89:9650)
+        # Track if this is first deployment (no IP set) or second deployment (IP set)
+        IS_FIRST_DEPLOYMENT=true
         if [ -n "$METAL_PUBLIC_IP" ]; then
           # Strip http:// and https:// prefix if present
           IP_CLEAN="${METAL_PUBLIC_IP#http://}"
@@ -63,6 +65,7 @@ services:
           if [[ "$IP_CLEAN" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             PUBLIC_IP="$IP_CLEAN"
             IP_SOURCE="Manual override (METAL_PUBLIC_IP environment variable)"
+            IS_FIRST_DEPLOYMENT=false
             echo "✅ Using manually specified public IP: $PUBLIC_IP"
             echo "   (Set via METAL_PUBLIC_IP environment variable in Akash Console)"
           else
