@@ -341,6 +341,13 @@ services:
           echo "Proof of Possession - Signature"
           echo "$BLS_SIG"
           echo ""
+          if [ -n "$PUBLIC_IP" ]; then
+            echo "Public IP (RPC Endpoint)"
+            echo "$PUBLIC_IP:9650"
+            echo ""
+            echo "Note: Save this IP for reference (useful for Grafana monitoring template)"
+            echo ""
+          fi
           echo "Register your validator: https://wallet.metalblockchain.org/"
           echo ""
           echo "========================================"
@@ -363,7 +370,7 @@ services:
           fi
           echo ""
           if [ -n "$PUBLIC_IP" ]; then
-            echo "✅ IP configured: $PUBLIC_IP"
+            echo "✅ IP configured: $PUBLIC_IP:9650"
             echo "   (Verify this matches your IP in Akash Console → Leases → IP(s))"
           fi
           echo ""
