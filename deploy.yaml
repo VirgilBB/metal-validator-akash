@@ -294,83 +294,38 @@ services:
         fi
         
         echo ""
-        echo "========================================"
-        echo "METAL MAINNET VALIDATOR - SETUP DATA"
-        echo "========================================"
-        echo ""
-        echo "⚠️  SAVE THIS DATA NOW ⚠️"
-        echo ""
-        echo "Node ID"
-        echo "$NODE_ID"
-        echo ""
-        echo "Proof of Possession - Public Key"
-        echo "$BLS_KEY"
-        echo ""
-        echo "Proof of Possession - Signature"
-        echo "$BLS_SIG"
-        echo ""
-        echo "Copy all three values above to register your validator on the Metal wallet dashboard:"
-        echo "https://wallet.metalblockchain.org/"
-        echo ""
-        echo "========================================"
-        echo "NETWORK STATUS"
-        echo "========================================"
-        echo ""
-        if [ "$PEER_COUNT" -gt 0 ] 2>/dev/null; then
-          echo "✅ Node is running"
-          echo "✅ Connected to $PEER_COUNT peers (outbound connections active)"
-          echo "✅ Network: Metal Mainnet"
-          if [ "$PEER_COUNT" -lt 50 ] 2>/dev/null; then
-            echo "⚠️  Note: Low peer count - complete IP update for better connectivity"
-          fi
-        else
-          echo "⚠️  Node is starting up..."
-          echo "⚠️  Connected to $PEER_COUNT peers (may still be connecting)"
-          echo "✅ Network: Metal Mainnet"
-        fi
-        echo ""
-        echo "Next steps:"
-        echo "1. Go to Akash Console → Leases tab → Copy the IP address"
-        echo "   (Format: YOUR-IP:9650, example: 184.105.162.180:9650)"
-        echo "2. Update deployment: METAL_PUBLIC_IP=http://YOUR-IP-HERE:9650"
-        echo "   (Replace YOUR-IP-HERE with your actual IP from step 1)"
-        echo "3. After updating, wait 2-3 minutes then check logs for:"
-        echo "   - '✅ Using manually specified public IP' message"
-        echo "   - IP matches your LoadBalancer IP from step 1"
-        echo "4. Register validator using the data above"
-        echo ""
-        echo "⚠️  No IP assigned? Redeploy on a different provider."
-        echo ""
-        echo "Verify your node: https://explorer.metalblockchain.org/validators"
-        echo "(Search for your Node ID after registration)"
-        echo ""
-        echo "========================================"
-        echo "BACKUP YOUR VALIDATOR (HIGHLY RECOMMENDED)"
-        echo "========================================"
-        echo ""
-        echo "Protect your validator! Backup now to recover if provider goes down."
-        echo ""
-        echo "Quick Backup (2 minutes):"
-        echo "1. Go to Akash Console → Your Deployment → Shell tab"
-        echo "2. Run: curl -s https://raw.githubusercontent.com/VirgilBB/Metal-Validator/main/metal-node-recovery/backup-node.sh | bash"
-        echo "3. Copy and securely save the base64 backup string"
-        echo "4. Store it safely (password manager, encrypted file, etc.)"
-        echo ""
-        echo "Need recovery? Email cerebro@cerebro.host with your backup string."
-        echo ""
-        echo "⚠️  Your backup contains staking keys - keep it secure!"
-        echo ""
-        echo "========================================"
-        echo ""
-        echo "Keeping node running... (check logs for ongoing activity)"
-        
-        # Keep container running and show periodic status with validator data
-        while true; do
-          sleep 300  # Every 5 minutes
-          CURRENT_PEERS=$(curl -s -X POST -H 'Content-Type: application/json' \
-            -d '{"jsonrpc":"2.0","method":"info.peers","params":{},"id":1}' \
-            http://localhost:9650/ext/info | jq -r '.result.numPeers // 0')
+        # Show different output based on deployment phase
+        if [ "$IS_FIRST_DEPLOYMENT" = true ]; then
+          # FIRST DEPLOYMENT - Initial setup (no IP configured yet)
+          echo "========================================"
+          echo "METAL MAINNET VALIDATOR - INITIAL SETUP"
+          echo "========================================"
           echo ""
+          if [ "$PEER_COUNT" -gt 0 ] 2>/dev/null; then
+            echo "✅ Node is running"
+            echo "✅ Connected to $PEER_COUNT peers"
+            echo "✅ Network: Metal Mainnet"
+          else
+            echo "⚠️  Node is starting up..."
+            echo "⚠️  Connected to $PEER_COUNT peers (may still be connecting)"
+            echo "✅ Network: Metal Mainnet"
+          fi
+          echo ""
+          echo "Next steps:"
+          echo "1. Go to Akash Console → Leases tab → Copy the IP address"
+          echo "   (Example format: 203.45.67.89:9650)"
+          echo "2. Update deployment: METAL_PUBLIC_IP=http://YOUR-IP-HERE:9650"
+          echo "   (Replace YOUR-IP-HERE with your actual IP from step 1)"
+          echo ""
+          echo "⚠️  No IP assigned? Redeploy on a different provider."
+          echo ""
+          echo "⚠️  IMPORTANT: Complete step 2 to finalize setup"
+          echo ""
+          echo "========================================"
+          echo ""
+          echo "Keeping node running... (complete IP update to see validator data)"
+        else
+          # SECOND DEPLOYMENT - IP configured, show full setup data
           echo "========================================"
           echo "METAL MAINNET VALIDATOR - SETUP DATA"
           echo "========================================"
@@ -386,28 +341,61 @@ services:
           echo "Proof of Possession - Signature"
           echo "$BLS_SIG"
           echo ""
-          echo "Copy all three values above to register your validator on the Metal wallet dashboard:"
-          echo "https://wallet.metalblockchain.org/"
+          echo "Register your validator: https://wallet.metalblockchain.org/"
           echo ""
           echo "========================================"
-          echo "NETWORK STATUS"
+          echo "BACKUP YOUR VALIDATOR (HIGHLY RECOMMENDED)"
           echo "========================================"
           echo ""
-          echo "[$(date)] Validator Status"
+          echo "Protect your validator! Backup now to recover if provider goes down."
+          echo ""
+          echo "Quick Backup (2 minutes):"
+          echo "1. Go to Akash Console → Your Deployment → Shell tab"
+          echo "2. Run: curl -s https://raw.githubusercontent.com/VirgilBB/Metal-Validator/main/metal-node-recovery/backup-node.sh | bash"
+          echo "3. Copy and securely save the base64 backup string"
+          echo "4. Store it safely (password manager, encrypted file, etc.)"
+          echo ""
+          echo "Need recovery? Email cerebro@cerebro.host"
+          echo ""
+          echo "⚠️  Your backup contains staking keys - keep it secure!"
+          echo ""
           echo "========================================"
-          echo "✅ Connected to $CURRENT_PEERS peers"
           echo ""
-          echo "Node ID:"
-          echo "$NODE_ID"
-          echo ""
-          echo "Public Key:"
-          echo "$BLS_KEY"
-          echo ""
-          echo "Signature:"
-          echo "$BLS_SIG"
-          echo ""
-          echo "Register: https://wallet.metalblockchain.org/"
-          echo "========================================"
+          echo "Keeping node running... (check logs for ongoing activity)"
+        fi
+        
+        # Keep container running and show periodic status with validator data
+        # Only show validator data if IP is configured (second deployment)
+        while true; do
+          sleep 1200  # Every 20 minutes
+          CURRENT_PEERS=$(curl -s -X POST -H 'Content-Type: application/json' \
+            -d '{"jsonrpc":"2.0","method":"info.peers","params":{},"id":1}' \
+            http://localhost:9650/ext/info | jq -r '.result.numPeers // 0')
+          
+          if [ "$IS_FIRST_DEPLOYMENT" = false ]; then
+            # Only show validator data if IP is configured (after second deployment)
+            echo ""
+            echo "========================================"
+            echo "[$(date)] Validator Status"
+            echo "========================================"
+            echo "✅ Connected to $CURRENT_PEERS peers"
+            echo ""
+            echo "Node ID:"
+            echo "$NODE_ID"
+            echo ""
+            echo "Public Key:"
+            echo "$BLS_KEY"
+            echo ""
+            echo "Signature:"
+            echo "$BLS_SIG"
+            echo ""
+            echo "Register: https://wallet.metalblockchain.org/"
+            echo "========================================"
+          else
+            # First deployment - just show status
+            echo ""
+            echo "[$(date)] Status: Connected to $CURRENT_PEERS peer(s) - Complete IP update to see validator data"
+          fi
         done
     
     expose:
