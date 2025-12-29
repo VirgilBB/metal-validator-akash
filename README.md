@@ -134,7 +134,6 @@ All three are required to register your validator on the [Metal Wallet Dashboard
 - **Advanced IP Detection**: Multi-method IP detection (Kubernetes API → Environment Variables → External Services)
 - **Manual IP Override**: Set `METAL_PUBLIC_IP` environment variable if auto-detection fails
 - **File Descriptor Limits**: Increased to 65536 to prevent "too many open files" errors
-- **Peer Monitoring**: Real-time peer count monitoring every 20 minutes (after IP configuration)
 - **Bootstrap Detection**: Waits for blockchain to fully bootstrap before reporting success
 
 ## Resources
