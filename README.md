@@ -37,8 +37,13 @@ https://raw.githubusercontent.com/VirgilBB/metal-validator-akash/main/deploy.yam
 The template requires a two-step deployment process:
 
 1. **Deploy first** - Create deployment to get LoadBalancer IP assigned
-2. **Get IP** - Check Akash Console → Deployment → "IP(s)" field
-3. **Update deployment** - Add environment variable `METAL_PUBLIC_IP=<your-loadbalancer-ip>` in Akash Console → Update
+2. **Get IP** - Check Akash Console → Deployment → "IP(s)" field (wait 1-2 minutes for IP to appear)
+3. **Update deployment** - Add environment variable in Akash Console:
+   - Go to your deployment → Click "Update"
+   - Find the `METAL_PUBLIC_IP` environment variable
+   - Enter your LoadBalancer IP from step 2
+   - **Example:** If your IP is `162.230.144.169`, set: `METAL_PUBLIC_IP=162.230.144.169`
+   - Click "Update" to save
 4. **Use final Node ID** - Copy Node ID from logs AFTER the update completes
 
 **Why two steps?** The LoadBalancer IP is assigned AFTER deployment, so we need to update with the correct IP.
@@ -91,13 +96,13 @@ Network: Metal Mainnet
 ## Troubleshooting
 
 ### Problem: Node shows "Not connected" in explorer
-**Solution**: Complete the two-step deployment process. Set `METAL_PUBLIC_IP` to your LoadBalancer IP from Akash Console and update the deployment.
+**Solution**: Complete the two-step deployment process. In Akash Console → Update deployment, set `METAL_PUBLIC_IP` to your LoadBalancer IP (found in Deployment → "IP(s)" field). Example: `METAL_PUBLIC_IP=162.230.144.169`
 
 ### Problem: "too many open files" errors
 **Solution**: The template includes `ulimit -n 65536` to prevent this issue.
 
 ### Problem: 0 peers connected
-**Solution**: Ensure you completed the two-step process and set the correct LoadBalancer IP in `METAL_PUBLIC_IP`.
+**Solution**: Ensure you completed the two-step process and set the correct LoadBalancer IP in `METAL_PUBLIC_IP`. Example: `METAL_PUBLIC_IP=162.230.144.169` (use your actual IP from Akash Console).
 
 ### Problem: Initial Node ID changes after update
 **Solution**: This is normal. Use the final Node ID from logs AFTER the IP update completes.
