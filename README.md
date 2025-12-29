@@ -125,10 +125,12 @@ VERIFICATION
 
 All three are required to register your validator on the [Metal Wallet Dashboard](https://wallet.metalblockchain.org/).
 
+**Also save the Public IP (RPC Endpoint)** - This is useful for deploying the Grafana monitoring template.
+
 **Important:** Use the Node ID, Public Key, and Signature from logs AFTER the IP update completes. The Node ID may change after the IP update, so always use the final values.
 
 ### Recurring Status Updates
-After the IP update, your logs will show a status update every 20 minutes with your validator credentials. You can always find your Node ID, Public Key, and Signature in recent logs.
+After the IP update, your logs will show a status update every 20 minutes with your validator credentials. You can always find your Node ID, Public Key, Signature, and RPC Endpoint in recent logs.
 
 ## Backup Your Validator (Highly Recommended)
 
