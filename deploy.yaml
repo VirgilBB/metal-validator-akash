@@ -344,6 +344,30 @@ services:
           echo "Register your validator: https://wallet.metalblockchain.org/"
           echo ""
           echo "========================================"
+          echo "VERIFICATION"
+          echo "========================================"
+          echo ""
+          if [ "$PEER_COUNT" -gt 0 ] 2>/dev/null; then
+            echo "✅ Node is operational"
+            echo "✅ Connected to $PEER_COUNT peer(s)"
+            if [ "$PEER_COUNT" -ge 50 ] 2>/dev/null; then
+              echo "✅ Good connectivity (50+ peers)"
+            elif [ "$PEER_COUNT" -ge 20 ] 2>/dev/null; then
+              echo "⚠️  Moderate connectivity ($PEER_COUNT peers - may improve over time)"
+            else
+              echo "⚠️  Low peer count ($PEER_COUNT peers - check network connectivity)"
+            fi
+          else
+            echo "⚠️  Node is starting up..."
+            echo "⚠️  Connected to $PEER_COUNT peer(s) (may still be connecting)"
+          fi
+          echo ""
+          if [ -n "$PUBLIC_IP" ]; then
+            echo "✅ IP configured: $PUBLIC_IP"
+            echo "   (Verify this matches your IP in Akash Console → Leases → IP(s))"
+          fi
+          echo ""
+          echo "========================================"
           echo "BACKUP YOUR VALIDATOR (HIGHLY RECOMMENDED)"
           echo "========================================"
           echo ""
