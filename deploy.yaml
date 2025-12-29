@@ -420,6 +420,11 @@ services:
             echo "Signature:"
             echo "$BLS_SIG"
             echo ""
+            if [ -n "$PUBLIC_IP" ]; then
+              echo "RPC Endpoint:"
+              echo "$PUBLIC_IP:9650"
+              echo ""
+            fi
             echo "Register: https://wallet.metalblockchain.org/"
             echo "========================================"
           else
