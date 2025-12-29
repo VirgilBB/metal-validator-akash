@@ -2,7 +2,7 @@
   <img src="assets/metalblockchain-logo.png" alt="Metal Blockchain Logo" width="200" />
 </p>
 
-# Deploy Metal Blockchain Validator on Akash Network
+# Deploy Metal Blockchain Validator
 
 Launch a Metal blockchain validator node in minutes on Akash's decentralized cloud for a fraction of traditional VPS costs. Metal blockchain, developed by Metallicus, powers a compliant Digital Asset Banking Network connecting traditional finance with blockchain technology for regulated institutions.
 
