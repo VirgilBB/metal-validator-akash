@@ -8,11 +8,9 @@ services:
   metal-blockchain:
     image: ubuntu:22.04
     env:
-      # Manual IP Override: Set METAL_PUBLIC_IP to your LoadBalancer IP from Akash Console
-      # This fixes "Not Connected" status when auto-detection gets wrong IP
-      # Format: METAL_PUBLIC_IP=http://<your-ip>:9650 (or just IP: 203.45.67.89)
-      # Example: METAL_PUBLIC_IP=http://203.45.67.89:9650
-      # Leave empty for initial deployment, update after IP is assigned
+      # After initial deployment, update this with YOUR IP from Akash Console
+      # Get IP and port from: Akash Console → Leases tab
+      # Example format: METAL_PUBLIC_IP=http://YOUR-IP-HERE:9650
       - METAL_PUBLIC_IP=
     command:
       - /bin/bash
