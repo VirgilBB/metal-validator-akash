@@ -328,7 +328,11 @@ services:
         echo "Public IP: $ADVERTISED_IP"
         echo "Connected Peers: $PEER_COUNT"
         echo "Network: Metal Mainnet"
-        echo "RPC Endpoint: http://<your-deployment-url>:9650"
+        if [ -n "$PUBLIC_IP" ]; then
+          echo "RPC Endpoint: http://$PUBLIC_IP:9650"
+        else
+          echo "RPC Endpoint: http://<your-ip>:9650 (check Akash Console → Deployment → IP(s) field)"
+        fi
         echo "P2P Port: 9651"
         echo ""
         echo "Explorer: https://explorer.metalblockchain.org/validators"

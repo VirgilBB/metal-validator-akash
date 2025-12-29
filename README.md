@@ -37,13 +37,16 @@ https://raw.githubusercontent.com/VirgilBB/Metal-Validator/main/deploy.yaml
 The template requires a two-step deployment process:
 
 1. **Deploy first** - Create deployment to get LoadBalancer IP assigned
-2. **Get IP** - Check Akash Console → Deployment → "IP(s)" field (wait 1-2 minutes for IP to appear)
+2. **Get IP** - Check your deployment logs for the "Public IP" value (e.g., `Public IP: 23.121.249.57`)
+   - **Option A:** If Akash Console → Deployment → "IP(s)" field shows an IP, use that
+   - **Option B:** If "IP(s)" field is empty, use the IP from your logs (shown as "Public IP: X.X.X.X")
+   - **Note:** The IP in logs is the actual LoadBalancer IP your node is using
 3. **Update deployment** - Add environment variable in Akash Console:
    - Go to your deployment → Click "Update"
    - Find the `METAL_PUBLIC_IP` environment variable
-   - Enter your LoadBalancer IP from step 2
-   - **Example:** If your IP is `203.45.67.89`, set: `METAL_PUBLIC_IP=203.45.67.89`
-   - **Note:** Use just the IP address (no port). Your RPC endpoint will be `http://203.45.67.89:9650`
+   - Enter the IP from step 2 (just the IP, no port)
+   - **Example:** If your logs show `Public IP: 23.121.249.57`, set: `METAL_PUBLIC_IP=23.121.249.57`
+   - **Note:** Use just the IP address (no port). Your RPC endpoint will be `http://23.121.249.57:9650`
    - Click "Update" to save
 4. **Copy validator data** - After the update completes, copy ALL THREE pieces of data from logs:
    - **Node ID** (e.g., `NodeID-ABC123...`)
@@ -85,7 +88,9 @@ P2P Port: 9651
 
 **Access Your Node:**
 - **RPC Endpoint:** `http://<your-ip>:9650` (Example: `http://203.45.67.89:9650`)
-- **P2P Port:** `9651`
+  - Use the IP from your logs (shown as "Public IP: X.X.X.X")
+  - Port `9650` is for RPC/API access
+- **P2P Port:** `9651` (for peer-to-peer connections, not for direct access)
 
 ## Key Features
 
@@ -107,7 +112,10 @@ P2P Port: 9651
 ## Troubleshooting
 
 ### Problem: Node shows "Not connected" in explorer
-**Solution**: Complete the two-step deployment process. In Akash Console → Update deployment, set `METAL_PUBLIC_IP` to your LoadBalancer IP (found in Deployment → "IP(s)" field). Example: `METAL_PUBLIC_IP=203.45.67.89`
+**Solution**: Complete the two-step deployment process. In Akash Console → Update deployment, set `METAL_PUBLIC_IP` to your LoadBalancer IP:
+- **If "IP(s)" field shows an IP:** Use that IP
+- **If "IP(s)" field is empty:** Use the IP from your logs (shown as "Public IP: X.X.X.X")
+- Example: `METAL_PUBLIC_IP=23.121.249.57` (use your actual IP)
 
 ### Problem: "too many open files" errors
 **Solution**: The template includes `ulimit -n 65536` to prevent this issue.
