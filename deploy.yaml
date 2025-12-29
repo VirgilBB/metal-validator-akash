@@ -407,18 +407,21 @@ services:
           CURRENT_IP=$(echo "$CURRENT_IP_INFO" | jq -r '.result.ip // empty' 2>/dev/null)
           
           if [ -n "$CURRENT_IP" ]; then
-            echo "✅ Node IP: $CURRENT_IP"
+            # Strip port if present (MetalGo API may return IP:port)
+            CURRENT_IP_CLEAN="${CURRENT_IP%%:*}"
+            echo "✅ Node IP: $CURRENT_IP_CLEAN"
             echo ""
             echo "IP Verification:"
             echo "1. Check Akash Console → Leases → IP(s) field"
-            echo "2. Compare with Node IP above ($CURRENT_IP)"
+            echo "2. Compare with Node IP above ($CURRENT_IP_CLEAN)"
             if [ "$CURRENT_PEERS" -ge 100 ] 2>/dev/null; then
-              echo "3. ✅ High peer count ($CURRENT_PEERS) = Good connectivity"
-              echo "4. ✅ IP configuration appears correct!"
+              echo "3. ✅ High peer count ($CURRENT_PEERS) = Good outbound connectivity"
+              echo "   Note: Peer count can be high even before IP update (outbound connections work)"
+              echo "   IP update is still needed for explorer status and optimal incoming connections"
             else
               echo "3. ⚠️  Low peer count ($CURRENT_PEERS) - may need IP update"
-              echo "4. ⚠️  If IPs don't match, update METAL_PUBLIC_IP and redeploy"
             fi
+            echo "4. If IPs don't match, update METAL_PUBLIC_IP and redeploy"
           fi
           echo ""
           echo "[$(date)] Status: Connected to $CURRENT_PEERS peer(s)"
