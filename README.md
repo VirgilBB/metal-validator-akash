@@ -4,7 +4,7 @@
 
 # Deploy Metal Blockchain Validator on Akash Network
 
-Launch a Metal blockchain validator node in minutes on Akash's decentralized cloud for a fraction of traditional VPS costs. Metal blockchain, developed by Metallicus, powers a compliant Digital Asset Banking Network connecting traditional finance with blockchain technology for regulated institutions.
+Launch a Metal blockchain validator node on Akash's decentralized cloud. Metal blockchain powers a compliant Digital Asset Banking Network for regulated institutions.
 
 ## Requirements
 
@@ -46,9 +46,7 @@ Deploy the `deploy.yaml` to trigger LoadBalancer IP assignment. Wait 1-2 minutes
    - Example: `METAL_PUBLIC_IP=http://203.45.67.89:9650`
 5. Click "Update" to save
 
-**Why two steps?** The LoadBalancer IP is assigned after deployment, so we update the configuration once the IP is available.
-
-**Important:** Update promptly after getting your IP—don't wait too long between deployments.
+**Why two steps?** LoadBalancer IP is assigned after deployment. Update promptly after getting your IP.
 
 ## Registering Your Validator
 
@@ -125,16 +123,16 @@ VERIFICATION
 
 All three are required to register your validator on the [Metal Wallet Dashboard](https://wallet.metalblockchain.org/).
 
-**Also save the Public IP (RPC Endpoint)** - This is useful for deploying the Grafana monitoring template.
+**Also save the Public IP (RPC Endpoint)** for Grafana monitoring template.
 
-**Important:** Use the Node ID, Public Key, and Signature from logs AFTER the IP update completes. The Node ID may change after the IP update, so always use the final values.
+**Important:** Use the final Node ID, Public Key, and Signature from logs AFTER the IP update completes (Node ID may change).
 
 ### Recurring Status Updates
-After the IP update, your logs will show a status update every 20 minutes with your validator credentials. You can always find your Node ID, Public Key, Signature, and RPC Endpoint in recent logs.
+Status updates appear every 20 minutes with your validator credentials (Node ID, Public Key, Signature, RPC Endpoint).
 
 ## Backup Your Validator (Highly Recommended)
 
-**⚠️ Highly Recommended:** Backup your validator credentials while your deployment is accessible. If your provider goes down or your deployment is lost, you can recover your validator identity instead of re-registering.
+**⚠️ Highly Recommended:** Backup your validator credentials to recover your validator identity if your provider goes down.
 
 ### Quick Backup (2 minutes)
 
