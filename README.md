@@ -52,28 +52,13 @@ Deploy the `deploy.yaml` to trigger LoadBalancer IP assignment. Wait 1-2 minutes
 
 ## Registering Your Validator
 
-After the update completes, check your deployment logs for your validator credentials:
+The deployment shows different output based on the deployment phase:
+
+### First Deployment (Initial Setup)
+After the first deployment, you'll see:
 ```
 ========================================
-METAL MAINNET VALIDATOR - SETUP DATA
-========================================
-
-⚠️  SAVE THIS DATA NOW ⚠️
-
-Node ID
-NodeID-ABC123...
-
-Proof of Possession - Public Key
-0x3059301306...
-
-Proof of Possession - Signature
-0x3045022100...
-
-Copy all three values above to register your validator on the Metal wallet dashboard:
-https://wallet.metalblockchain.org/
-
-========================================
-NETWORK STATUS
+METAL MAINNET VALIDATOR - INITIAL SETUP
 ========================================
 
 ✅ Node is running
@@ -83,15 +68,36 @@ NETWORK STATUS
 Next steps:
 1. Go to Akash Console → Leases tab → Copy the IP address
    (Example format: 203.45.67.89:9650)
-2. Update deployment: METAL_PUBLIC_IP=http://203.45.67.89:9650
-   (Replace with your actual IP from step 1)
-3. Register validator using the data above
+2. Update deployment: METAL_PUBLIC_IP=http://YOUR-IP-HERE:9650
+   (Replace YOUR-IP-HERE with your actual IP from step 1)
 
 ⚠️  No IP assigned? Redeploy on a different provider.
 
-Verify your node: https://explorer.metalblockchain.org/validators
-(Search for your Node ID after registration)
+⚠️  IMPORTANT: Complete step 2 to finalize setup
+========================================
+```
 
+**Note:** No Node ID is shown yet. Complete the IP update first.
+
+### Second Deployment (After IP Update)
+After updating with your LoadBalancer IP, you'll see the full validator data:
+```
+========================================
+METAL MAINNET VALIDATOR - SETUP DATA
+========================================
+
+⚠️  SAVE THIS DATA NOW ⚠️
+
+Node ID
+NodeID-EmAczyoApADhjs4XAkodTKcrSLyjHNvSG
+
+Proof of Possession - Public Key
+0xa71852d4ddc0264781181e2f34991b25f0777d15f867219b5dc1b76244d0cda9b3c408d0e6496f9ab3bbb95255c31e82
+
+Proof of Possession - Signature
+0x8981dc303bab3a634f27f288313e801d1f9da065713f6e10817a7c248d0e39878a534d2b04217af834562d587be3507f0d006c7c8aab9343af8531b91ab9b0ca9b0d919135c1bcc478ea4742d16fcc4a1f54c99b27b319ed2e16646f963994ff
+
+Register your validator: https://wallet.metalblockchain.org/
 ========================================
 ```
 
@@ -102,7 +108,7 @@ Verify your node: https://explorer.metalblockchain.org/validators
 
 All three are required to register your validator on the [Metal Wallet Dashboard](https://wallet.metalblockchain.org/).
 
-**Note:** Use the final Node ID, Public Key, and Signature from logs AFTER the IP update completes.
+**Important:** Use the Node ID, Public Key, and Signature from logs AFTER the IP update completes. The Node ID may change after the IP update, so always use the final values.
 
 ## Backup Your Validator (Highly Recommended)
 
@@ -128,7 +134,7 @@ All three are required to register your validator on the [Metal Wallet Dashboard
 - **Advanced IP Detection**: Multi-method IP detection (Kubernetes API → Environment Variables → External Services)
 - **Manual IP Override**: Set `METAL_PUBLIC_IP` environment variable if auto-detection fails
 - **File Descriptor Limits**: Increased to 65536 to prevent "too many open files" errors
-- **Peer Monitoring**: Real-time peer count monitoring every 5 minutes
+- **Peer Monitoring**: Real-time peer count monitoring every 20 minutes (after IP configuration)
 - **Bootstrap Detection**: Waits for blockchain to fully bootstrap before reporting success
 
 ## Resources
