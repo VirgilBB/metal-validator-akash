@@ -12,7 +12,6 @@ Before deploying, ensure you have:
 
 - **Akash wallet** with AKT tokens (for deployment costs)
 - **Metal wallet** with 2,000+ METAL tokens (for mainnet staking)
-- **Provider** with `ip-lease: true` attribute (for dedicated IP)
 - **Access to Akash Console** (no CLI required)
 - **5-10 minutes** for deployment and bootstrap
 
@@ -26,8 +25,7 @@ Before deploying, ensure you have:
 1. Go to [Akash Console](https://console.akash.network/)
 2. Click "Deploy" → "Upload SDL"
 3. Upload `deploy.yaml` from this repository
-4. Choose a provider with `ip-lease: true` attribute
-5. Deploy and wait 5-10 minutes
+4. Deploy and wait 5-10 minutes
 
 **GitHub Raw URL:**
 ```
