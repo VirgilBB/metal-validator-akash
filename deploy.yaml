@@ -334,13 +334,15 @@ services:
         fi
         if [ -n "$PUBLIC_IP" ]; then
           echo "2. Update deployment: METAL_PUBLIC_IP=http://$PUBLIC_IP:9650"
-          echo "   (Replace $PUBLIC_IP with your actual IP from step 1)"
         else
           echo "2. Update deployment: METAL_PUBLIC_IP=http://203.45.67.89:9650"
-          echo "   (Replace 203.45.67.89 with your actual IP from step 1)"
         fi
         echo "   (Replace with your actual IP from step 1)"
-        echo "3. Register validator using the data above"
+        echo "3. After updating, wait 2-3 minutes then check logs for verification:"
+        echo "   - Look for '✅ Using manually specified public IP' message"
+        echo "   - Verify the IP matches your LoadBalancer IP from step 1"
+        echo "   - Check peer count increases (should see 100+ peers)"
+        echo "4. Register validator using the data above"
         echo ""
         echo "⚠️  No IP assigned? Redeploy on a different provider."
         echo ""
@@ -399,6 +401,27 @@ services:
           echo "✅ Node is running"
           echo "✅ Connected to $CURRENT_PEERS peers"
           echo "✅ Network: Metal Mainnet"
+          
+          # Get current IP being used for verification
+          CURRENT_IP_INFO=$(curl -s -X POST -H 'Content-Type: application/json' \
+            -d '{"jsonrpc":"2.0","method":"info.getNodeIP","params":{},"id":1}' \
+            http://localhost:9650/ext/info 2>/dev/null)
+          CURRENT_IP=$(echo "$CURRENT_IP_INFO" | jq -r '.result.ip // empty' 2>/dev/null)
+          
+          if [ -n "$CURRENT_IP" ]; then
+            echo "✅ Node IP: $CURRENT_IP"
+            echo ""
+            echo "IP Verification:"
+            echo "1. Check Akash Console → Leases → IP(s) field"
+            echo "2. Compare with Node IP above ($CURRENT_IP)"
+            if [ "$CURRENT_PEERS" -ge 100 ] 2>/dev/null; then
+              echo "3. ✅ High peer count ($CURRENT_PEERS) = Good connectivity"
+              echo "4. ✅ IP configuration appears correct!"
+            else
+              echo "3. ⚠️  Low peer count ($CURRENT_PEERS) - may need IP update"
+              echo "4. ⚠️  If IPs don't match, update METAL_PUBLIC_IP and redeploy"
+            fi
+          fi
           echo ""
           echo "[$(date)] Status: Connected to $CURRENT_PEERS peer(s)"
         done
