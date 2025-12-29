@@ -10,7 +10,8 @@ services:
     env:
       # Manual IP Override: Set METAL_PUBLIC_IP to your LoadBalancer IP from Akash Console
       # This fixes "Not Connected" status when auto-detection gets wrong IP
-      # To set via CLI: Change this line to: - METAL_PUBLIC_IP=<your-ip>
+      # Format: METAL_PUBLIC_IP=http://<your-ip>:9650
+      # Example: METAL_PUBLIC_IP=http://203.45.67.89:9650
       # Or set in Akash Console → Deployment → Environment Variables
       - METAL_PUBLIC_IP=
     command:
