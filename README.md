@@ -42,8 +42,8 @@ The template requires a two-step deployment process:
    - Go to your deployment → Click "Update"
    - Find the `METAL_PUBLIC_IP` environment variable
    - Enter your LoadBalancer IP from step 2
-   - **Example:** If your IP is `162.230.144.169`, set: `METAL_PUBLIC_IP=162.230.144.169`
-   - **Note:** Use just the IP address (no port). Your RPC endpoint will be `http://162.230.144.169:9650`
+   - **Example:** If your IP is `203.45.67.89`, set: `METAL_PUBLIC_IP=203.45.67.89`
+   - **Note:** Use just the IP address (no port). Your RPC endpoint will be `http://203.45.67.89:9650`
    - Click "Update" to save
 4. **Copy validator data** - After the update completes, copy ALL THREE pieces of data from logs:
    - **Node ID** (e.g., `NodeID-ABC123...`)
@@ -84,7 +84,7 @@ P2P Port: 9651
 ```
 
 **Access Your Node:**
-- **RPC Endpoint:** `http://<your-ip>:9650` (Example: `http://162.230.144.169:9650`)
+- **RPC Endpoint:** `http://<your-ip>:9650` (Example: `http://203.45.67.89:9650`)
 - **P2P Port:** `9651`
 
 ## Key Features
@@ -107,13 +107,13 @@ P2P Port: 9651
 ## Troubleshooting
 
 ### Problem: Node shows "Not connected" in explorer
-**Solution**: Complete the two-step deployment process. In Akash Console → Update deployment, set `METAL_PUBLIC_IP` to your LoadBalancer IP (found in Deployment → "IP(s)" field). Example: `METAL_PUBLIC_IP=162.230.144.169`
+**Solution**: Complete the two-step deployment process. In Akash Console → Update deployment, set `METAL_PUBLIC_IP` to your LoadBalancer IP (found in Deployment → "IP(s)" field). Example: `METAL_PUBLIC_IP=203.45.67.89`
 
 ### Problem: "too many open files" errors
 **Solution**: The template includes `ulimit -n 65536` to prevent this issue.
 
 ### Problem: 0 peers connected
-**Solution**: Ensure you completed the two-step process and set the correct LoadBalancer IP in `METAL_PUBLIC_IP`. Example: `METAL_PUBLIC_IP=162.230.144.169` (use your actual IP from Akash Console).
+**Solution**: Ensure you completed the two-step process and set the correct LoadBalancer IP in `METAL_PUBLIC_IP`. Example: `METAL_PUBLIC_IP=203.45.67.89` (use your actual IP from Akash Console).
 
 ### Problem: Initial Node ID changes after update
 **Solution**: This is normal. Use the final Node ID, Public Key, and Signature from logs AFTER the IP update completes. All three are required for validator registration.
